@@ -94,7 +94,7 @@ namespace UNO.Model
                 Stapel.Enqueue(new ZweiZiehenKarte(farbe));
             }
 
-            Stapel.Mischen();
+            Stapel = Stapel.Mischen();
         }
 
         public void SpielStart()
