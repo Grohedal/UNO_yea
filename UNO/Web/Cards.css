@@ -1,0 +1,149 @@
+﻿body {
+    background: #aaa;
+    padding: 16px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Bellefair', serif;
+}
+
+.card {
+    width: 160px;
+    height: 240px;
+    border-radius: 8px;
+    position: relative;
+    display: inline-table;
+    color: #ccc;
+    background: url(cardbg.png);
+    border: 1px solid #222222;
+    margin: 4px;
+}
+
+
+    .card > .small::before,
+    .card > .small::after {
+        position: absolute;
+        padding: 8px;
+        font-size: 24px;
+    }
+
+    .card > .small::before {
+        top: 0;
+        left: 0;
+    }
+
+    .card > .small::after {
+        bottom: 0;
+        right: 0;
+        transform: rotate(180deg);
+    }
+
+    .card::after {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-size: 92px;
+        vertical-align: middle;
+        display: table-cell;
+    }
+
+    .card.red {
+        background: url(cardbg_red.png);
+        border: 1px solid #200;
+    }
+
+    .card.blue {
+        background: url(cardbg_blue.png);
+        border: 1px solid #002;
+    }
+
+    .card.green {
+        background: url(cardbg_green.png);
+        border: 1px solid #010;
+    }
+
+    .card.yellow {
+        background: url(cardbg_yellow.png);
+        border: 1px solid #330;
+    }
+
+    .card.zero > .small::before,
+    .card.zero > .small::after,
+    .card.zero::after {
+        content: '0';
+    }
+
+    .card.one > .small::before,
+    .card.one > .small::after,
+    .card.one::after {
+        content: '1';
+    }
+
+    .card.two > .small::before,
+    .card.two > .small::after,
+    .card.two::after {
+        content: '2';
+    }
+
+    .card.three > .small::before,
+    .card.three > .small::after,
+    .card.three::after {
+        content: '3';
+    }
+
+    .card.four > .small::before,
+    .card.four > .small::after,
+    .card.four::after {
+        content: '4';
+    }
+
+    .card.five > .small::before,
+    .card.five > .small::after,
+    .card.five::after {
+        content: '5';
+    }
+
+    .card.six > .small::before,
+    .card.six > .small::after,
+    .card.six::after {
+        content: '6';
+    }
+
+    .card.seven > .small::before,
+    .card.seven > .small::after,
+    .card.seven::after {
+        content: '7';
+    }
+
+    .card.eight > .small::before,
+    .card.eight > .small::after,
+    .card.eight::after {
+        content: '8';
+    }
+
+    .card.nine > .small::before,
+    .card.nine > .small::after,
+    .card.nine::after {
+        content: '9';
+    }
+
+    .card.miss > .small::before,
+    .card.miss > .small::after,
+    .card.miss::after {
+        content: '×';
+    }
+
+    .card.switch > .small::before,
+    .card.switch > .small::after,
+    .card.switch::after {
+        content: '<>';
+    }
+
+    .card.take-two > .small::before,
+    .card.take-two > .small::after,
+    .card.take-two::after {
+        content: '+2';
+    }

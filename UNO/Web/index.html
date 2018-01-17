@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Bellefair" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="Cards.css"/>
+    <script>
+        $(window).on('load', function () {
+            var nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'miss', 'switch', 'take-two'];
+            var color = ['', 'red', 'blue', 'green', 'yellow'];
+
+            $(color).each(function (j, c) {
+                $(nr).each(function (i, n) {
+                    var cl = n + ' ' + c;
+
+                    $('body').append(
+                        '<div class="card ' + cl + '">' +
+                        '    <div class="small"></div>' +
+                        '</div>'
+                    );
+                });
+            });
+        });
+
+        var connection = new WebSocket('ws://localhost:666');
+
+        // When the connection is open, send some data to the server
+        connection.onopen = function () {
+            connection.send('Ping'); // Send the message 'Ping' to the server
+        };
+
+        // Log errors
+        connection.onerror = function (error) {
+            console.log('WebSocket Error ' + error);
+        };
+
+        // Log messages from the server
+        connection.onmessage = function (e) {
+            console.log('Server: ' + e.data);
+        };
+
+
+    </script>
+</head>
+<body>
+    TEST 1,2,3
+</body>
+</html>
