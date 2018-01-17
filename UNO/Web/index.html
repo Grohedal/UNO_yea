@@ -40,17 +40,25 @@
         };
 
         function UpdateHand(hand) {
-            var nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'miss', 'switch', 'take-two'];
-            var color = ['', 'red', 'blue', 'green', 'yellow'];
+            var specialCards = ['miss', 'switch', 'take-two'];
+            var nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+            var color = ['yellow', 'red', 'blue', 'green', ' '];
 
             var handStr = "";
 
             $(hand).each(function (i, j) {
                 console.log(i);
                 console.log(j);
-                handStr += '<div class="card ' + nr[j.Zahl] + ' ' + color[j.Farbe] + ' ' + '">' +
+                if (j.Typ != undefined) {
+                    handStr += '<div class="card ' + specialCards[j.Typ] + ' ' + color[j.Farbe] + ' ' + '">' +
                         '    <div class="small"></div>' +
-                        '</div>'
+                        '</div>';
+                } else {
+                    handStr += '<div class="card ' + nr[j.Zahl] + ' ' + color[j.Farbe] + ' ' + '">' +
+                        '    <div class="small"></div>' +
+                        '</div>';
+                }
+
             });
             $('body').append(handStr);
             console.log(hand);
