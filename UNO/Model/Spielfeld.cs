@@ -1,6 +1,7 @@
 ﻿using Fleck;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +21,6 @@ namespace UNO.Model
         {
             Spieler = spieler.ToDictionary(s => s.Socket, s => s);
             InitStapel();
-            Austeilen();
-            GelegteKarten.Add(Stapel.Dequeue());
-            AktiverSpieler = Spieler.Values.First();
         }
 
         private void Austeilen()
@@ -33,6 +31,25 @@ namespace UNO.Model
                 {
                     spieler.Karten.Add(Stapel.Dequeue());
                 }
+            }
+        }
+
+        private void Spielzug()
+        {
+            IWebSocketConnection key = Spieler.Keys.First();
+            AktiverSpieler = Spieler.Values.First();
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            while (stopWatch.ElapsedMilliseconds < 20000)
+            {
+                
+            }
+            stopWatch.Stop();
+            Spieler.Remove(key);
+            Spieler.Add(key, AktiverSpieler);
+            if(Spieler.Count > 1)
+            {
+                Spielzug();
             }
         }
 
@@ -58,7 +75,9 @@ namespace UNO.Model
 
         public void SpielStart()
         {
-            throw new NotImplementedException();
+            Austeilen();
+            GelegteKarten.Add(Stapel.Dequeue());
+            Spielzug();
         }
     }
 }
