@@ -17,9 +17,11 @@ namespace UNO.Model
         List<IKarte> GelegteKarten = new List<IKarte>();
         ISpieler AktiverSpieler;
         bool NichtGelegt = true;
+        int KartenZiehen;
 
         public Spielfeld(IEnumerable<ISpieler> spieler)
         {
+            KartenZiehen = 0;
             Spieler = spieler.ToDictionary(s => s.Socket, s => s);
             InitStapel();
         }
@@ -42,9 +44,22 @@ namespace UNO.Model
             AktiverSpieler.ZiehtKarte(Stapel);
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
+            NichtGelegt = AktiverSpieler.KannSpielerLegen(GelegteKarten.Last());
             while (stopWatch.ElapsedMilliseconds < 20000 && NichtGelegt)
             {
-                
+
+            }
+            if (GelegteKarten.Last().Typ == KartenTyp.Ziehen)
+            {
+                KartenZiehen += 2;
+            }
+            else
+            {
+                for (int i = 0; i < KartenZiehen; i++)
+                {
+                    AktiverSpieler.Karten.Add(Stapel.Dequeue());
+                }
+                KartenZiehen = 0;
             }
             stopWatch.Stop();
             Spieler.Remove(key);

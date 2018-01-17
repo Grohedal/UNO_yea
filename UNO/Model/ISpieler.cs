@@ -17,6 +17,8 @@ namespace UNO.Model
         //event Action ZiehtKarte;
         void ZiehtKarte(Queue<IKarte> stapel);
 
+        bool KannSpielerLegen(IKarte karte);
+
         event Func<IKarte> LegtKarte;
     }
 }
