@@ -24,6 +24,8 @@ namespace UNO.Model
             KartenZiehen = 0;
             Spieler = spieler.ToDictionary(s => s.Socket, s => s);
             InitStapel();
+            SpielStart();
+
         }
 
         private void Austeilen()
@@ -95,6 +97,14 @@ namespace UNO.Model
             Austeilen();
             GelegteKarten.Add(Stapel.Dequeue());
             Spielzug();
+            AktiverSpieler = Spieler.Values.First();
+
+            foreach (ISpieler temp in Spieler.Values)
+            {
+                temp.TeileSpielStand(GelegteKarten.Last(), true);
+            }
+
+
         }
     }
 }

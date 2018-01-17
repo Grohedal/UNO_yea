@@ -20,5 +20,7 @@ namespace UNO.Model
         bool KannSpielerLegen(IKarte karte);
 
         event Func<IKarte> LegtKarte;
+
+        void TeileSpielStand(IKarte gelegteKarte, bool aktiv);
     }
 }

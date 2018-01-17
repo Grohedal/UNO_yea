@@ -4,22 +4,9 @@
     <link href="https://fonts.googleapis.com/css?family=Bellefair" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="Cards.css" rel="stylesheet"/>
+
     <script>
         $(window).on('load', function () {
-            var nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'miss', 'switch', 'take-two'];
-            var color = ['', 'red', 'blue', 'green', 'yellow'];
-
-            $(color).each(function (j, c) {
-                $(nr).each(function (i, n) {
-                    var cl = n + ' ' + c;
-
-                    $('body').append(
-                        '<div class="card ' + cl + '">' +
-                        '    <div class="small"></div>' +
-                        '</div>'
-                    );
-                });
-            });
         });
 
         var connection = new WebSocket('ws://localhost:666');
@@ -36,12 +23,40 @@
 
         // Log messages from the server
         connection.onmessage = function (e) {
-            console.log('Server: ' + e.data);
+            var res = JSON.parse(e.data);
+            UpdateHand(res.hand);
         };
+
+        function UpdateHand(hand) {
+            var specialCards = ['miss', 'switch', 'take-two'];
+            var nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+            var color = ['yellow', 'red', 'blue', 'green', ' '];
+
+            var handStr = "";
+
+            $(hand).each(function (i, j) {
+                console.log(i);
+                console.log(j);
+                if (j.Typ != undefined) {
+                    handStr += '<div class="card ' + specialCards[j.Typ] + ' ' + color[j.Farbe] + ' ' + '">' +
+                        '    <div class="small"></div>' +
+                        '</div>';
+                } else {
+                    handStr += '<div class="card ' + nr[j.Zahl] + ' ' + color[j.Farbe] + ' ' + '">' +
+                        '    <div class="small"></div>' +
+                        '</div>';
+                }
+
+            });
+            $('body').append(handStr);
+            console.log(hand);
+        }
 
     </script>
 </head>
 <body>
-    TEST 1,2,3
+    <div id="hand">
+
+    </div>
 </body>
 </html>
