@@ -41,6 +41,11 @@ namespace UNO.Model
 
         private void Spielzug()
         {
+
+            foreach (ISpieler temp in Spieler.Values)
+            {
+                temp.TeileSpielStand(GelegteKarten.Last(), true);
+            }
             IWebSocketConnection key = Spieler.Keys.First();
             AktiverSpieler = Spieler.Values.First();
             AktiverSpieler.ZiehtKarte(Stapel);
@@ -97,14 +102,6 @@ namespace UNO.Model
             Austeilen();
             GelegteKarten.Add(Stapel.Dequeue());
             Spielzug();
-            AktiverSpieler = Spieler.Values.First();
-
-            foreach (ISpieler temp in Spieler.Values)
-            {
-                temp.TeileSpielStand(GelegteKarten.Last(), true);
-            }
-
-
         }
     }
 }
