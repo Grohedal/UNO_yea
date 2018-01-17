@@ -43,9 +43,10 @@ namespace UNO.Model
             AktiverSpieler = Spieler.Values.First();
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
+            NichtGelegt = AktiverSpieler.KannSpielerLegen(GelegteKarten.Last());
             while (stopWatch.ElapsedMilliseconds < 20000 && NichtGelegt)
             {
-                
+
             }
             if (GelegteKarten.Last().Typ == KartenTyp.Ziehen)
             {
