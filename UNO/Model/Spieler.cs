@@ -20,7 +20,12 @@ namespace UNO.Model
             Socket = socket;
         }
 
-        public event Action ZiehtKarte;
+        //public event Action ZiehtKarte;
+
+        public void ZiehtKarte(Queue<IKarte> stapel)
+        {
+            Karten.Add(stapel.Dequeue());
+        }
 
         public event Func<IKarte> LegtKarte;
     }

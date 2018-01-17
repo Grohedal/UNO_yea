@@ -39,6 +39,7 @@ namespace UNO.Model
         {
             IWebSocketConnection key = Spieler.Keys.First();
             AktiverSpieler = Spieler.Values.First();
+            AktiverSpieler.ZiehtKarte(Stapel);
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             while (stopWatch.ElapsedMilliseconds < 20000 && NichtGelegt)
