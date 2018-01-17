@@ -16,6 +16,7 @@ namespace UNO.Model
         Queue<IKarte> Stapel = new Queue<IKarte>();
         List<IKarte> GelegteKarten = new List<IKarte>();
         ISpieler AktiverSpieler;
+        bool NichtGelegt = true;
 
         public Spielfeld(IEnumerable<ISpieler> spieler)
         {
@@ -40,7 +41,7 @@ namespace UNO.Model
             AktiverSpieler = Spieler.Values.First();
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            while (stopWatch.ElapsedMilliseconds < 20000)
+            while (stopWatch.ElapsedMilliseconds < 20000 && NichtGelegt)
             {
                 
             }
