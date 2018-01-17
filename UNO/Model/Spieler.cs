@@ -1,6 +1,7 @@
 ﻿using Fleck;
 using System;
 using System.Collections.Generic;
+using System.Web.Script.Serialization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,5 +24,13 @@ namespace UNO.Model
         public event Action ZiehtKarte;
 
         public event Func<IKarte> LegtKarte;
+
+        public void TeileSpielStand(IKarte gelegteKarte, bool aktiv)
+        {
+            
+            var obj = new { aktuelleKarte = gelegteKarte, aktiv = aktiv, hand = Karten };
+            var json = new JavaScriptSerializer().Serialize(obj);
+            Socket.Send(json);
+        }
     }
 }

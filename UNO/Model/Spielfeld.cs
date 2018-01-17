@@ -20,9 +20,7 @@ namespace UNO.Model
         {
             Spieler = spieler.ToDictionary(s => s.Socket, s => s);
             InitStapel();
-            Austeilen();
-            GelegteKarten.Add(Stapel.Dequeue());
-            AktiverSpieler = Spieler.Values.First();
+            SpielStart();
         }
 
         private void Austeilen()
@@ -58,7 +56,17 @@ namespace UNO.Model
 
         public void SpielStart()
         {
-            throw new NotImplementedException();
+
+            Austeilen();
+            GelegteKarten.Add(Stapel.Dequeue());
+            AktiverSpieler = Spieler.Values.First();
+            foreach(ISpieler temp in Spieler.Values)
+            {
+                temp.TeileSpielStand(GelegteKarten.Last(), true);
+            }
+            
+
+
         }
     }
 }

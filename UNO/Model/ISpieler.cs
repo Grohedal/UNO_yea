@@ -17,5 +17,7 @@ namespace UNO.Model
         event Action ZiehtKarte;
 
         event Func<IKarte> LegtKarte;
+
+        void TeileSpielStand(IKarte gelegteKarte, bool aktiv);
     }
 }
