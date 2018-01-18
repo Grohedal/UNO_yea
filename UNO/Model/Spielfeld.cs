@@ -22,10 +22,8 @@ namespace UNO.Model
         public Spielfeld(IEnumerable<ISpieler> spieler)
         {
             KartenZiehen = 0;
-            Spieler = spieler.ToDictionary(s => s.Socket, s => s).Values.ToList();
+            Spieler = spieler.ToList();
             InitStapel();
-            SpielStart();
-
         }
 
         private void Austeilen()
