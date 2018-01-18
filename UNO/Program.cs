@@ -13,7 +13,7 @@ namespace UNO
     {
         const int HttpPort = 1337;
         const int WebSocketPort = 666;
-        static List<ISpieler> AllSpieler = new List<ISpieler>();
+        static List<Spieler> AllSpieler = new List<Spieler>();
         static Spielfeld DasSpielfeld;
 
         static void Main(string[] args)
@@ -42,7 +42,7 @@ namespace UNO
             }
             else
             {
-                DasSpielfeld.Spieler = AllSpieler;
+                DasSpielfeld.AllSpieler = AllSpieler;
                 DasSpielfeld.SpielStart();
             }
         }
