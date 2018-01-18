@@ -37,6 +37,12 @@ namespace UNO.Model
             }
         }
 
+        private void LegtKarte(IKarte karte)
+        {
+            AktiverSpieler.Karten.Remove(karte);
+            GelegteKarten.Add(karte);
+        }
+
         private void Spielzug()
         {
             AktiverSpieler = AllSpieler.First();
@@ -45,8 +51,6 @@ namespace UNO.Model
             {
                 NächsterSpieler();
             }
-
-            AktiverSpieler.ZiehtKarte(Stapel);
 
             foreach (ISpieler temp in AllSpieler)
             {
@@ -63,19 +67,21 @@ namespace UNO.Model
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             //NichtGelegt = AktiverSpieler.KannSpielerLegen(GelegteKarten.Last());
-            while (stopWatch.ElapsedMilliseconds < 2000 && NichtGelegt)
+            while (stopWatch.ElapsedMilliseconds < 20000 && NichtGelegt)
             {
                 if(AktiverSpieler.CardIndex != null)
                 {
                     IKarte gelegteKarteSpieler = AktiverSpieler.Karten[(int) AktiverSpieler.CardIndex];
                     if (VersuchtKarteLegen(gelegteKarteSpieler))
                     {
-                        AktiverSpieler.LegtKarte(gelegteKarteSpieler);
+                        LegtKarte(gelegteKarteSpieler);
+                        AktiverSpieler.CardIndex = null;
                         NächsterSpieler();
                     }
                     else
                     {
                         AktiverSpieler.ZiehtKarte(Stapel);
+                        AktiverSpieler.CardIndex = null;
                         NächsterSpieler();
                     }
                 }
