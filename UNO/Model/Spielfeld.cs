@@ -68,6 +68,16 @@ namespace UNO.Model
                 if(AktiverSpieler.CardIndex != null)
                 {
                     IKarte gelegteKarteSpieler = AktiverSpieler.Karten[(int) AktiverSpieler.CardIndex];
+                    if (VersuchtKarteLegen(gelegteKarteSpieler))
+                    {
+                        AktiverSpieler.LegtKarte(gelegteKarteSpieler);
+                        NächsterSpieler();
+                    }
+                    else
+                    {
+                        AktiverSpieler.ZiehtKarte(Stapel);
+                        NächsterSpieler();
+                    }
                 }
             }
             if (GelegteKarten.Last().Typ == KartenTyp.Ziehen && !NichtGelegt)
