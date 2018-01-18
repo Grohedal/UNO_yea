@@ -11,7 +11,7 @@ namespace UNO.Model
 {
     class Spielfeld
     {
-        Dictionary<IWebSocketConnection ,ISpieler> Spieler = new Dictionary<IWebSocketConnection, ISpieler>();
+        List<ISpieler> Spieler = new List<ISpieler>();
         List<ISpieler> FertigeSpieler = new List<ISpieler>();
         Queue<IKarte> Stapel = new Queue<IKarte>();
         List<IKarte> GelegteKarten = new List<IKarte>();
@@ -22,17 +22,15 @@ namespace UNO.Model
         public Spielfeld(IEnumerable<ISpieler> spieler)
         {
             KartenZiehen = 0;
-            Spieler = spieler.ToDictionary(s => s.Socket, s => s);
+            Spieler = spieler.ToList();
             InitStapel();
-            SpielStart();
-
         }
 
         private void Austeilen()
         {
             for (int i = 0; i < 7; i++)
             {
-                foreach (ISpieler spieler in Spieler.Values)
+                foreach (ISpieler spieler in Spieler)
                 {
                     spieler.Karten.Add(Stapel.Dequeue());
                 }
@@ -41,14 +39,20 @@ namespace UNO.Model
 
         private void Spielzug()
         {
+            AktiverSpieler = Spieler.First();
+            
+            if (AktiverSpieler.Aussetzen == true)
+            {
+                NächsterSpieler();
+            }
 
-            foreach (ISpieler temp in Spieler.Values)
+            AktiverSpieler.ZiehtKarte(Stapel);
+
+            foreach (ISpieler temp in Spieler)
             {
                 temp.TeileSpielStand(GelegteKarten.Last(), true);
             }
-            IWebSocketConnection key = Spieler.Keys.First();
-            AktiverSpieler = Spieler.Values.First();
-            AktiverSpieler.ZiehtKarte(Stapel);
+
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             //NichtGelegt = AktiverSpieler.KannSpielerLegen(GelegteKarten.Last());
@@ -69,12 +73,17 @@ namespace UNO.Model
                 KartenZiehen = 0;
             }
             stopWatch.Stop();
-            Spieler.Remove(key);
-            Spieler.Add(key, AktiverSpieler);
-            if(Spieler.Count > 1)
+            if (Spieler.Count > 1)
             {
-                Spielzug();
+                NächsterSpieler();
             }
+        }
+
+        private void NächsterSpieler()
+        {
+            Spieler.Remove(AktiverSpieler);
+            Spieler.Add(AktiverSpieler);
+            Spielzug();
         }
 
         private void InitStapel()
