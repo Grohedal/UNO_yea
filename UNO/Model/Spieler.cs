@@ -67,5 +67,10 @@ namespace UNO.Model
             }
             return kannLegen;
         }
+
+        public void OnSend(string message)
+        {
+            string s = message;
+        }
     }
 }

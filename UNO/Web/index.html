@@ -35,21 +35,26 @@
             var handStr = "";
 
             $(hand).each(function (i, j) {
-                console.log(i);
-                console.log(j);
+                
                 if (j.Typ != undefined) {
-                    handStr += '<div class="card ' + specialCards[j.Typ] + ' ' + color[j.Farbe] + ' ' + '">' +
+                    handStr += '<div id="card-' + i + '" class="card ' + specialCards[j.Typ] + ' ' + color[j.Farbe] + ' ' + '">' +
                         '    <div class="small"></div>' +
                         '</div>';
                 } else {
-                    handStr += '<div class="card ' + nr[j.Zahl] + ' ' + color[j.Farbe] + ' ' + '">' +
+                    handStr += '<div id="card-' + i + '"  class="card ' + nr[j.Zahl] + ' ' + color[j.Farbe] + ' ' + '">' +
                         '    <div class="small"></div>' +
                         '</div>';
                 }
 
             });
-            $('body').append(handStr);
+            $('body').html(handStr);
             console.log(hand);
+            $(document).ready(function () {
+                $('.card').on('click', function (event) {
+                    var id = event.target.id;
+                    connection.send(id);
+                })
+            });
         }
 
     </script>

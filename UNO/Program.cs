@@ -31,7 +31,10 @@ namespace UNO
 
         private static void NewSpieler(IWebSocketConnection socket)
         {
-            AllSpieler.Add(new Spieler("asdasd", socket));
+            Spieler NewSpieler = new Spieler("asdasd", socket);
+            NewSpieler.Socket.OnMessage = (string message) => NewSpieler.OnSend(message);
+            AllSpieler.Add(NewSpieler);
+            
             if(AllSpieler.Count >= 2)
             {
                 Spielfeld spielfeld = new Spielfeld(AllSpieler);
