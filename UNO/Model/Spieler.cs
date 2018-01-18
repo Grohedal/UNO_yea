@@ -16,6 +16,10 @@ namespace UNO.Model
         public string Name { get; }
         public bool Aussetzen { get; set; }
 
+        public int? CardIndex { get; set; }
+
+
+
         public Spieler(string name, IWebSocketConnection socket)
         {
             Name = name;
@@ -74,7 +78,22 @@ namespace UNO.Model
 
         public void OnSend(string message)
         {
-            string s = message;
+            if(message != "Ping")
+            {
+                string s = message;
+                s = s.Replace("card-", "");
+                try
+                {
+                    int cardIndex = Int32.Parse(s);
+                    CardIndex = cardIndex;
+                }
+                catch (FormatException e)
+                {
+                    Console.WriteLine(e.Message);
+                    CardIndex = null;
+                }
+            }
+
         }
     }
 }

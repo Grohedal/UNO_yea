@@ -14,6 +14,8 @@ namespace UNO.Model
         List<IKarte> Karten { get; }
         bool Aussetzen { get; }
 
+        int? CardIndex { get;  }
+
         //event Action ZiehtKarte;
         void ZiehtKarte(Queue<IKarte> stapel);
 
