@@ -39,13 +39,20 @@ namespace UNO.Model
 
         private void Spielzug()
         {
+            AktiverSpieler = Spieler.First();
+            
+            if (AktiverSpieler.Aussetzen == true)
+            {
+                NächsterSpieler();
+            }
+
+            AktiverSpieler.ZiehtKarte(Stapel);
 
             foreach (ISpieler temp in Spieler)
             {
                 temp.TeileSpielStand(GelegteKarten.Last(), true);
             }
-            AktiverSpieler = Spieler.First();
-            AktiverSpieler.ZiehtKarte(Stapel);
+
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             //NichtGelegt = AktiverSpieler.KannSpielerLegen(GelegteKarten.Last());
@@ -68,10 +75,15 @@ namespace UNO.Model
             stopWatch.Stop();
             if (Spieler.Count > 1)
             {
-                Spieler.Remove(AktiverSpieler);
-                Spieler.Add(AktiverSpieler);
-                Spielzug();
+                NächsterSpieler();
             }
+        }
+
+        private void NächsterSpieler()
+        {
+            Spieler.Remove(AktiverSpieler);
+            Spieler.Add(AktiverSpieler);
+            Spielzug();
         }
 
         private void InitStapel()
