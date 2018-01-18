@@ -11,7 +11,7 @@ namespace UNO.Model
 {
     class Spielfeld
     {
-        Dictionary<IWebSocketConnection ,ISpieler> Spieler = new Dictionary<IWebSocketConnection, ISpieler>();
+        List<ISpieler> Spieler = new List<ISpieler>();
         List<ISpieler> FertigeSpieler = new List<ISpieler>();
         Queue<IKarte> Stapel = new Queue<IKarte>();
         List<IKarte> GelegteKarten = new List<IKarte>();
@@ -22,7 +22,7 @@ namespace UNO.Model
         public Spielfeld(IEnumerable<ISpieler> spieler)
         {
             KartenZiehen = 0;
-            Spieler = spieler.ToDictionary(s => s.Socket, s => s);
+            Spieler = spieler.ToDictionary(s => s.Socket, s => s).Values.ToList();
             InitStapel();
             SpielStart();
 
@@ -32,7 +32,7 @@ namespace UNO.Model
         {
             for (int i = 0; i < 7; i++)
             {
-                foreach (ISpieler spieler in Spieler.Values)
+                foreach (ISpieler spieler in Spieler)
                 {
                     spieler.Karten.Add(Stapel.Dequeue());
                 }
@@ -42,12 +42,11 @@ namespace UNO.Model
         private void Spielzug()
         {
 
-            foreach (ISpieler temp in Spieler.Values)
+            foreach (ISpieler temp in Spieler)
             {
                 temp.TeileSpielStand(GelegteKarten.Last(), true);
             }
-            IWebSocketConnection key = Spieler.Keys.First();
-            AktiverSpieler = Spieler.Values.First();
+            AktiverSpieler = Spieler.First();
             AktiverSpieler.ZiehtKarte(Stapel);
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -69,10 +68,10 @@ namespace UNO.Model
                 KartenZiehen = 0;
             }
             stopWatch.Stop();
-            Spieler.Remove(key);
-            Spieler.Add(key, AktiverSpieler);
-            if(Spieler.Count > 1)
+            if (Spieler.Count > 1)
             {
+                Spieler.Remove(AktiverSpieler);
+                Spieler.Add(AktiverSpieler);
                 Spielzug();
             }
         }
