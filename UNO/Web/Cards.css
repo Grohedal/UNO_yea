@@ -10,6 +10,15 @@
     font-family: 'Bellefair', serif;
 }
 
+.info-text {
+    font-size: 1.5em;
+    text-align: center;
+    color: deeppink;
+}
+.not-visible {
+    display: none;
+}
+
 .card {
     width: 160px;
     height: 240px;
@@ -146,4 +155,10 @@
     .card.take-two > .small::after,
     .card.take-two::after {
         content: '+2';
+    }
+    #stapel {
+        width: 100%;
+        height: 300px;
+        display:block;
+        text-align: center;
     }

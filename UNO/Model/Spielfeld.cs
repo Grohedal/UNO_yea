@@ -50,7 +50,14 @@ namespace UNO.Model
 
             foreach (ISpieler temp in Spieler)
             {
-                temp.TeileSpielStand(GelegteKarten.Last(), true);
+                if(temp == AktiverSpieler)
+                {
+                    temp.TeileSpielStand(GelegteKarten.Last(), true);
+                } else
+                {
+                    temp.TeileSpielStand(GelegteKarten.Last(), false);
+                }
+                
             }
 
             Stopwatch stopWatch = new Stopwatch();
