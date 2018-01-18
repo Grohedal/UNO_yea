@@ -64,17 +64,17 @@ namespace UNO.Model
             {
                 KartenZiehen += 2;
             }
-            else
+            else if (KartenZiehen != 0)
             {
-                if (KartenZiehen == 0)
-                {
-                    AktiverSpieler.ZiehtKarte(Stapel);
-                }
                 for (int i = 0; i < KartenZiehen; i++)
                 {
                     AktiverSpieler.ZiehtKarte(Stapel);
                 }
                 KartenZiehen = 0;
+            }
+            else
+            {
+                AktiverSpieler.ZiehtKarte(Stapel);
             }
             stopWatch.Stop();
             if (Spieler.Count > 1)
