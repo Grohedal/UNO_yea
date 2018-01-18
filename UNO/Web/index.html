@@ -33,10 +33,11 @@
         function UpdateSpieler(toggle) {
             if (toggle) {
                 testy = true;
-                $('#info').toggle('not-visible');
+               // $('#info').toggle('not-visible');
             } else {
                 testy = false;
-                $('#info').toggle('not-visible');
+                //$('#info').toggle('not-visible');
+                $('#info').html(toggle);
             }
 
         }
