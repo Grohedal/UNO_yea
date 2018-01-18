@@ -29,7 +29,11 @@ namespace UNO.Model
             Karten.Add(stapel.Dequeue());
         }
 
-        public event Func<IKarte> LegtKarte;
+        public IKarte LegtKarte(IKarte karte)
+        {
+            Karten.Remove(karte);
+            return karte;
+        }
 
         public void TeileSpielStand(IKarte gelegteKarte, bool aktiv)
         {
