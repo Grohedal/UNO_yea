@@ -63,17 +63,21 @@ namespace UNO.Model
                     IKarte gelegteKarteSpieler = AktiverSpieler.Karten[(int) AktiverSpieler.CardIndex];
                 }
             }
-            if (GelegteKarten.Last().Typ == KartenTyp.Ziehen)
+            if (GelegteKarten.Last().Typ == KartenTyp.Ziehen && !NichtGelegt)
             {
                 KartenZiehen += 2;
             }
-            else
+            else if (KartenZiehen != 0)
             {
                 for (int i = 0; i < KartenZiehen; i++)
                 {
-                    AktiverSpieler.Karten.Add(Stapel.Dequeue());
+                    AktiverSpieler.ZiehtKarte(Stapel);
                 }
                 KartenZiehen = 0;
+            }
+            else
+            {
+                AktiverSpieler.ZiehtKarte(Stapel);
             }
             stopWatch.Stop();
             if (Spieler.Count > 1)
