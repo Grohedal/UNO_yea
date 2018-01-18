@@ -13,7 +13,8 @@ namespace UNO
     {
         const int HttpPort = 1337;
         const int WebSocketPort = 666;
-        static List<Spieler> AllSpieler = new List<Spieler>();
+        static List<ISpieler> AllSpieler = new List<ISpieler>();
+        static Spielfeld DasSpielfeld;
 
         static void Main(string[] args)
         {
@@ -35,9 +36,14 @@ namespace UNO
             NewSpieler.Socket.OnMessage = (string message) => NewSpieler.OnSend(message);
             AllSpieler.Add(NewSpieler);
             
-            if(AllSpieler.Count >= 2)
+            if(AllSpieler.Count < 2)
             {
-                Spielfeld spielfeld = new Spielfeld(AllSpieler);
+                DasSpielfeld = new Spielfeld(AllSpieler);
+            }
+            else
+            {
+                DasSpielfeld.Spieler = AllSpieler;
+                DasSpielfeld.SpielStart();
             }
         }
     }
