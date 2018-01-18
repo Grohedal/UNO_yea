@@ -11,18 +11,18 @@ namespace UNO.Model
 {
     class Spielfeld
     {
-        public List<ISpieler> Spieler = new List<ISpieler>();
-        List<ISpieler> FertigeSpieler = new List<ISpieler>();
+        public List<Spieler> AllSpieler = new List<Spieler>();
+        List<Spieler> FertigeSpieler = new List<Spieler>();
         Queue<IKarte> Stapel = new Queue<IKarte>();
         List<IKarte> GelegteKarten = new List<IKarte>();
-        ISpieler AktiverSpieler;
+        Spieler AktiverSpieler;
         bool NichtGelegt = true;
         int KartenZiehen;
 
-        public Spielfeld(IEnumerable<ISpieler> spieler)
+        public Spielfeld(IEnumerable<Spieler> spieler)
         {
             KartenZiehen = 0;
-            Spieler = spieler.ToList();
+            AllSpieler = spieler.ToList();
             InitStapel();
         }
 
@@ -30,7 +30,7 @@ namespace UNO.Model
         {
             for (int i = 0; i < 7; i++)
             {
-                foreach (ISpieler spieler in Spieler)
+                foreach (ISpieler spieler in AllSpieler)
                 {
                     spieler.Karten.Add(Stapel.Dequeue());
                 }
@@ -39,7 +39,7 @@ namespace UNO.Model
 
         private void Spielzug()
         {
-            AktiverSpieler = Spieler.First();
+            AktiverSpieler = AllSpieler.First();
             
             if (AktiverSpieler.Aussetzen == true)
             {
@@ -48,7 +48,7 @@ namespace UNO.Model
 
             AktiverSpieler.ZiehtKarte(Stapel);
 
-            foreach (ISpieler temp in Spieler)
+            foreach (ISpieler temp in AllSpieler)
             {
                 if(temp == AktiverSpieler)
                 {
@@ -87,16 +87,63 @@ namespace UNO.Model
                 AktiverSpieler.ZiehtKarte(Stapel);
             }
             stopWatch.Stop();
-            if (Spieler.Count > 1)
+            if (AllSpieler.Count > 1)
             {
                 NächsterSpieler();
             }
         }
 
+        public bool VersuchtKarteLegen(IKarte karte)
+        {
+            IKarte obersteKarte = GelegteKarten.Last();
+            //Schwarze Karten noch nicht da
+            if (karte.Farbe == obersteKarte.Farbe)
+            {
+                if (karte.Typ == KartenTyp.Richtungswechsel)
+                {
+                    Richtungswechsel();
+                }
+                else if (karte.Typ == KartenTyp.Aussetzen)
+                {
+                    AllSpieler[1].Aussetzen = true;
+                }
+                return true;
+            }
+            else if (karte.Typ == KartenTyp.Zahl && obersteKarte.Typ == KartenTyp.Zahl)
+            {
+                ZahlKarte zk = (ZahlKarte)karte;
+                ZahlKarte zk2 = (ZahlKarte)obersteKarte;
+                if (zk.Zahl == zk2.Zahl)
+                {
+                    return true;
+                }
+            }
+            else if (karte.Typ == KartenTyp.Ziehen && obersteKarte.Typ == KartenTyp.Ziehen)
+            {
+                return true;
+            }
+            else if (karte.Typ == KartenTyp.Richtungswechsel && obersteKarte.Typ == KartenTyp.Richtungswechsel)
+            {
+                Richtungswechsel();
+                return true;
+            }
+            else if (karte.Typ == KartenTyp.Aussetzen && obersteKarte.Typ == KartenTyp.Aussetzen)
+            {
+                AllSpieler[1].Aussetzen = true;
+                return true;
+            }
+            return false;
+        }
+
+        private void Richtungswechsel()
+        {
+            Stapel.Reverse();
+        }
+
         private void NächsterSpieler()
         {
-            Spieler.Remove(AktiverSpieler);
-            Spieler.Add(AktiverSpieler);
+            AllSpieler.Remove(AktiverSpieler);
+            AllSpieler.Add(AktiverSpieler);
             Spielzug();
         }
 
