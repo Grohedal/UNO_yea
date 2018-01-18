@@ -11,7 +11,7 @@ namespace UNO.Model
 {
     class Spielfeld
     {
-        List<ISpieler> Spieler = new List<ISpieler>();
+        public List<ISpieler> Spieler = new List<ISpieler>();
         List<ISpieler> FertigeSpieler = new List<ISpieler>();
         Queue<IKarte> Stapel = new Queue<IKarte>();
         List<IKarte> GelegteKarten = new List<IKarte>();
