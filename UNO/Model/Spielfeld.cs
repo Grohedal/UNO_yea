@@ -97,24 +97,7 @@ namespace UNO.Model
             {
                 if (AktiverSpieler.Ki == true)
                 {
-                    ((KI)AktiverSpieler).ÜberprüftKarten(GelegteKarten.Last());
-                    IKarte gelegteKarteSpieler = ((KI)AktiverSpieler).LegtKarte();
-                    if (VersuchtKarteLegen(gelegteKarteSpieler))
-                    {
-                        LegtKarte(gelegteKarteSpieler);
-                        break;
-                    }
-                    else
-                    {
-                        if (((KI)AktiverSpieler).Ziehen == true)
-                        {
-                            break;
-                        }
-                        GenugKartenImStapel();
-                        ((KI)AktiverSpieler).ZiehtKarte(Stapel);
-                        ((KI)AktiverSpieler).CardIndex = null;
-                        NächsterSpieler();
-                    }
+                    KIMachtZug();
                 }
                 else if (AktiverSpieler.CardIndex != null)
                 {
@@ -174,6 +157,10 @@ namespace UNO.Model
                     ((Spieler)AktiverSpieler).Ziehen = false;
                 }
             }
+            else if (KartenZiehen == 0 && NichtGelegt)
+            {
+                AktiverSpieler.ZiehtKarte(Stapel);
+            }
             stopWatch.Stop();
             if(AktiverSpieler.Karten.Count == 0)
             {
@@ -190,6 +177,26 @@ namespace UNO.Model
                 NächsterSpieler();
             }
             
+        }
+
+        private void KIMachtZug()
+        {
+            ((KI)AktiverSpieler).ÜberprüftKarten(GelegteKarten.Last());
+            IKarte gelegteKarteSpieler = ((KI)AktiverSpieler).LegtKarte();
+            if (VersuchtKarteLegen(gelegteKarteSpieler))
+            {
+                LegtKarte(gelegteKarteSpieler);
+            }
+            else
+            {
+                if (((KI)AktiverSpieler).Ziehen != true)
+                {
+                    GenugKartenImStapel();
+                    ((KI)AktiverSpieler).ZiehtKarte(Stapel);
+                    ((KI)AktiverSpieler).CardIndex = null;
+                    NächsterSpieler();
+                }
+            }
         }
 
         private void SpielerGewinnt()

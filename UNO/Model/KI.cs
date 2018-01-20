@@ -54,6 +54,7 @@ namespace UNO.Model
             }
         }
 
+        //Methode zum Legen ohne Nachzudenken
         public IKarte LegtKarte()
         {
             if (LegbareKarten.Count > 0)
