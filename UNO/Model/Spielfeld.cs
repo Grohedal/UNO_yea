@@ -12,7 +12,6 @@ namespace UNO.Model
     class Spielfeld
     {
         public List<Spieler> AllSpieler = new List<Spieler>();
-        public List<Spieler> CurrentSpieler = new List<Spieler>();
         List<Spieler> FertigeSpieler = new List<Spieler>();
         Queue<IKarte> Stapel = new Queue<IKarte>();
         List<IKarte> GelegteKarten = new List<IKarte>();
@@ -24,7 +23,6 @@ namespace UNO.Model
         {
             KartenZiehen = 0;
             AllSpieler = spieler.ToList();
-            CurrentSpieler = spieler.ToList();
             InitStapel();
         }
 
@@ -130,7 +128,7 @@ namespace UNO.Model
                 AktiverSpieler.CardIndex = null;
                 NächsterSpieler();
             }
-            //SpielNeustart();
+            SpielNeustart();
         }
 
         private void SpielerGewinnt()
@@ -243,11 +241,13 @@ namespace UNO.Model
 
         private void SpielNeustart()
         {
-            AllSpieler.RemoveRange(0, AllSpieler.Count - 1);
+            foreach (ISpieler sp in AllSpieler)
+            {
+                sp.Karten.RemoveRange(0, sp.Karten.Count - 1);
+            }
             FertigeSpieler.RemoveRange(0, FertigeSpieler.Count - 1);
             Stapel.Clear();
             GelegteKarten.RemoveRange(0, GelegteKarten.Count - 1);
-            AllSpieler = CurrentSpieler;
             InitStapel();
             SpielStart();
         }
