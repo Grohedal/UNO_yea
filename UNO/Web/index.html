@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <link href="https://fonts.googleapis.com/css?family=Bellefair" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,700,500,100" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="Cards.css" rel="stylesheet"/>
     <script>
@@ -33,6 +33,9 @@
                 if (data.aktuelleKarte != undefined) {
                     this.UpdateStapel(data.aktuelleKarte);
                 }
+                if (data.gewonnen != undefined) {
+                    this.Gewonnen();
+                }
                 this.UpdateView();
 
             }
@@ -40,7 +43,10 @@
             SpieleKarte(id) {
                 this.connection.send(id);
             }
-
+            Gewonnen() {
+                this.state = false;
+                this.hand = "<div id='celebration'>Winner Winner Chicken Dinner</div>";
+            }
             UpdateView() {
                 $('#hand').html(this.hand);
                 $('#stapel').html(this.stapel);
@@ -54,7 +60,8 @@
             }
 
             UpdateStapel(stapel) {
-                if (this.stapel.Typ != undefined) {
+                console.log(stapel);
+                if (stapel.Typ != undefined) {
                     this.stapel += '<div  class="card ' + this.specialCards[stapel.Typ] + ' ' + this.color[stapel.Farbe] + ' ' + '">' +
                         '    <div class="small"></div>' +
                         '</div>';
@@ -102,8 +109,14 @@
             uno.Message(e.data);
         }
         $("#hand").click('.card', function (e) {
-            if (uno.GetState())
+            if (uno.GetState()) {
                 uno.SpieleKarte(e.target.id);
+            } else {
+                $('#info').html('Du bist nicht dran Ingo !!').delay(3000).fadeOut(function () {
+                    $('#info').html('');
+                    $('#info').css('display', 'block');
+                });
+            }
 
         });
     });
@@ -113,9 +126,11 @@
     </script>
 </head>
 <body>
-    <div id="info"></div>
-    <div id="state"></div>
-    <div id="stapel"></div>
+    <div id="spielfeld">
+        <div id="stapel"></div>
+        <div id="info"></div>
+        <div id="state"></div>
+    </div>
     <div id="hand"></div>
 
 </body>

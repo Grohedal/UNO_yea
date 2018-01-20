@@ -54,6 +54,10 @@ namespace UNO.Model
         private void Spielzug()
         {
 
+            if(AllSpieler.Count == 1)
+            {
+                SpielNeustart();
+            }
 
             AktiverSpieler = AllSpieler.First();
 
@@ -120,13 +124,15 @@ namespace UNO.Model
             if(AktiverSpieler.Karten.Count == 0)
             {
                 SpielerGewinnt();
+                AktiverSpieler.HastGewonnen();
+                Spielzug();
             }
             if (AllSpieler.Count > 1)
             {
                 AktiverSpieler.CardIndex = null;
                 NächsterSpieler();
             }
-            SpielNeustart();
+            
         }
 
         private void SpielerGewinnt()
@@ -201,6 +207,7 @@ namespace UNO.Model
 
         private void NächsterSpieler()
         {
+            
             AllSpieler.Remove(AktiverSpieler);
             AllSpieler.Add(AktiverSpieler);
             Spielzug();

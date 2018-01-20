@@ -37,7 +37,7 @@ namespace UNO.Model
         public void TeileSpielStand(IKarte gelegteKarte, bool aktiv)
         {
 
-            var obj = new { aktuelleKarte = gelegteKarte, aktiv = aktiv, hand = Karten };
+            var obj = new { aktuelleKarte = gelegteKarte, aktiv = aktiv, hand = Karten , name = Name};
             var json = new JavaScriptSerializer().Serialize(obj);
             Socket.Send(json);
         }
@@ -60,6 +60,14 @@ namespace UNO.Model
                 }
             }
 
+        }
+
+        public void HastGewonnen()
+        {
+
+            var obj = new { gewonnen = true};
+            var json = new JavaScriptSerializer().Serialize(obj);
+            Socket.Send(json);
         }
     }
 }

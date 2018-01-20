@@ -36,7 +36,7 @@ namespace UNO
             NewSpieler.Socket.OnMessage = (string message) => NewSpieler.OnSend(message);
             AllSpieler.Add(NewSpieler);
             
-            if(AllSpieler.Count < 2)
+            if(AllSpieler.Count < 3)
             {
                 DasSpielfeld = new Spielfeld(AllSpieler);
             }

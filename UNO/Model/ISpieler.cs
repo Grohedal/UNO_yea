@@ -20,5 +20,7 @@ namespace UNO.Model
         void ZiehtKarte(Queue<IKarte> stapel);
         
         void TeileSpielStand(IKarte gelegteKarte, bool aktiv);
+
+        void HastGewonnen();
     }
 }
