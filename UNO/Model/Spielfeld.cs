@@ -11,15 +11,15 @@ namespace UNO.Model
 {
     class Spielfeld
     {
-        public List<Spieler> AllSpieler = new List<Spieler>();
-        List<Spieler> FertigeSpieler = new List<Spieler>();
+        public List<ISpieler> AllSpieler = new List<ISpieler>();
+        List<ISpieler> FertigeSpieler = new List<ISpieler>();
         Queue<IKarte> Stapel = new Queue<IKarte>();
         List<IKarte> GelegteKarten = new List<IKarte>();
-        Spieler AktiverSpieler;
+        ISpieler AktiverSpieler;
         bool NichtGelegt = true;
         int KartenZiehen;
 
-        public Spielfeld(IEnumerable<Spieler> spieler)
+        public Spielfeld(IEnumerable<ISpieler> spieler)
         {
             KartenZiehen = 0;
             AllSpieler = spieler.ToList();
@@ -65,25 +65,58 @@ namespace UNO.Model
             {
                 NächsterSpieler();
             }
-
             foreach (ISpieler temp in AllSpieler)
             {
-                if (temp == AktiverSpieler)
+                if (temp.Ki == false)
                 {
-                    temp.TeileSpielStand(GelegteKarten.Last(), true);
-                }
-                else
-                {
-                    temp.TeileSpielStand(GelegteKarten.Last(), false);
+                    if (temp == AktiverSpieler)
+                    {
+                        temp.TeileSpielStand(GelegteKarten.Last(), true);
+                    }
+                    else
+                    {
+                        temp.TeileSpielStand(GelegteKarten.Last(), false);
+                    }
                 }
             }
 
+            if (AktiverSpieler.Ki)
+            {
+                Stopwatch st = new Stopwatch();
+                st.Start();
+                while (st.ElapsedMilliseconds < 1500)
+                {
+
+                }
+                st.Stop();
+            }
             NichtGelegt = true;
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             while (stopWatch.ElapsedMilliseconds < 20000 && NichtGelegt)
             {
-                if (AktiverSpieler.CardIndex != null)
+                if (AktiverSpieler.Ki == true)
+                {
+                    ((KI)AktiverSpieler).ÜberprüftKarten(GelegteKarten.Last());
+                    IKarte gelegteKarteSpieler = ((KI)AktiverSpieler).LegtKarte();
+                    if (VersuchtKarteLegen(gelegteKarteSpieler))
+                    {
+                        LegtKarte(gelegteKarteSpieler);
+                        break;
+                    }
+                    else
+                    {
+                        if (((KI)AktiverSpieler).Ziehen == true)
+                        {
+                            break;
+                        }
+                        GenugKartenImStapel();
+                        ((KI)AktiverSpieler).ZiehtKarte(Stapel);
+                        ((KI)AktiverSpieler).CardIndex = null;
+                        NächsterSpieler();
+                    }
+                }
+                else if (AktiverSpieler.CardIndex != null)
                 {
                     IKarte gelegteKarteSpieler = AktiverSpieler.Karten[(int)AktiverSpieler.CardIndex];
                     if (VersuchtKarteLegen(gelegteKarteSpieler))
@@ -99,15 +132,29 @@ namespace UNO.Model
                         }
                         GenugKartenImStapel();
                         AktiverSpieler.ZiehtKarte(Stapel);
-                        AktiverSpieler.CardIndex = null;
+                        ((Spieler)AktiverSpieler).CardIndex = null;
                         NächsterSpieler();
                     }
                 }
             }
             if (GelegteKarten.Last().Typ == KartenTyp.Ziehen && !NichtGelegt)
             {
-                AllSpieler[1].Ziehen = true;
-                AktiverSpieler.Ziehen = false;
+                if (AllSpieler[1].Ki)
+                {
+                    ((KI)AllSpieler[1]).Ziehen = true;
+                }
+                else
+                {
+                    ((Spieler)AllSpieler[1]).Ziehen = true;
+                }
+                if (AktiverSpieler.Ki)
+                {
+                    ((KI)AktiverSpieler).Ziehen = false;
+                }
+                else
+                {
+                    ((Spieler)AktiverSpieler).Ziehen = false;
+                }
                 KartenZiehen += 2;
             }
             else if (KartenZiehen != 0)
@@ -118,7 +165,14 @@ namespace UNO.Model
                     AktiverSpieler.ZiehtKarte(Stapel);
                 }
                 KartenZiehen = 0;
-                AktiverSpieler.Ziehen = false;
+                if (AktiverSpieler.Ki)
+                {
+                    ((KI)AktiverSpieler).Ziehen = false;
+                }
+                else
+                {
+                    ((Spieler)AktiverSpieler).Ziehen = false;
+                }
             }
             stopWatch.Stop();
             if(AktiverSpieler.Karten.Count == 0)
@@ -129,7 +183,10 @@ namespace UNO.Model
             }
             if (AllSpieler.Count > 1)
             {
-                AktiverSpieler.CardIndex = null;
+                if (!AktiverSpieler.Ki)
+                {
+                    ((Spieler)AktiverSpieler).CardIndex = null;
+                }
                 NächsterSpieler();
             }
             
@@ -170,7 +227,14 @@ namespace UNO.Model
                 }
                 else if (karte.Typ == KartenTyp.Aussetzen)
                 {
-                    AllSpieler[1].Aussetzen = true;
+                    if (AllSpieler[1].Ki)
+                    {
+                        ((KI)AllSpieler[1]).Aussetzen = true;
+                    }
+                    else
+                    {
+                        ((Spieler)AllSpieler[1]).Aussetzen = true;
+                    }
                 }
                 return true;
             }
@@ -194,7 +258,14 @@ namespace UNO.Model
             }
             else if (karte.Typ == KartenTyp.Aussetzen && obersteKarte.Typ == KartenTyp.Aussetzen)
             {
-                AllSpieler[1].Aussetzen = true;
+                if (AllSpieler[1].Ki)
+                {
+                    ((KI)AllSpieler[1]).Aussetzen = true;
+                }
+                else
+                {
+                    ((Spieler)AllSpieler[1]).Aussetzen = true;
+                }
                 return true;
             }
             return false;
@@ -235,11 +306,12 @@ namespace UNO.Model
 
         public void SpielStart()
         {
+            AllSpieler.Add(new KI("Knud", null));
             Austeilen();
             GelegteKarten.Add(Stapel.Dequeue());
             if (GelegteKarten[0].Typ == KartenTyp.Ziehen)
             {
-                AllSpieler[0].Ziehen = true;
+                ((Spieler)AllSpieler[0]).Ziehen = true;
                 KartenZiehen = 2;
             }
             Spielzug();
@@ -247,7 +319,7 @@ namespace UNO.Model
 
         private void SpielNeustart()
         {
-            List<Spieler> AlleSpielerImSpiel = AllSpieler.Concat(FertigeSpieler).ToList();
+            List<ISpieler> AlleSpielerImSpiel = AllSpieler.Concat(FertigeSpieler).ToList();
             foreach (ISpieler sp in AlleSpielerImSpiel)
             {
                 if (sp.Karten.Count > 0)

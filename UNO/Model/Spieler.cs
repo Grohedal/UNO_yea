@@ -16,13 +16,14 @@ namespace UNO.Model
         public string Name { get; }
         public bool Aussetzen { get; set; }
         public bool Ziehen { get; set; }
-
+        public bool Ki { get; }
         public int? CardIndex { get; set; }
 
 
 
         public Spieler(string name, IWebSocketConnection socket)
         {
+            Ki = false;
             Name = name;
             Socket = socket;
         }
