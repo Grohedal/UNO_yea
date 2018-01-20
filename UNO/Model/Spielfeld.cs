@@ -98,6 +98,7 @@ namespace UNO.Model
                 if (AktiverSpieler.Ki == true)
                 {
                     KIMachtZug();
+                    break;
                 }
                 else if (AktiverSpieler.CardIndex != null)
                 {
