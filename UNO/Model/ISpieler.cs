@@ -13,7 +13,8 @@ namespace UNO.Model
         string Name { get; }
         List<IKarte> Karten { get; }
         bool Aussetzen { get; }
-
+        bool Ki { get; }
+        bool Ziehen { get; }
         int? CardIndex { get;  }
 
         //event Action ZiehtKarte;
