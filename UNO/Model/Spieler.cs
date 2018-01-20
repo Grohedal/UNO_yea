@@ -15,6 +15,7 @@ namespace UNO.Model
         public List<IKarte> Karten { get; } = new List<IKarte>();
         public string Name { get; }
         public bool Aussetzen { get; set; }
+        public bool Ziehen { get; set; }
 
         public int? CardIndex { get; set; }
 

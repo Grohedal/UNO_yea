@@ -34,6 +34,10 @@ namespace UNO.Model
             {
                 foreach (ISpieler spieler in AllSpieler)
                 {
+                    if (Stapel.Count() < 7)
+                    {
+                        InitStapel();
+                    }
                     spieler.Karten.Add(Stapel.Dequeue());
                 }
             }
@@ -41,8 +45,12 @@ namespace UNO.Model
 
         private void LegtKarte(IKarte karte)
         {
-            AktiverSpieler.Karten.Remove(karte);
-            GelegteKarten.Add(karte);
+            if (AktiverSpieler.Ziehen != true || karte.Typ == KartenTyp.Ziehen)
+            {
+                AktiverSpieler.Karten.Remove(karte);
+                GelegteKarten.Add(karte);
+                NichtGelegt = false;
+            }
         }
 
         private void Spielzug()
@@ -81,10 +89,14 @@ namespace UNO.Model
                     if (VersuchtKarteLegen(gelegteKarteSpieler))
                     {
                         LegtKarte(gelegteKarteSpieler);
-                        NichtGelegt = false;
+                        break;
                     }
                     else
                     {
+                        if (AktiverSpieler.Ziehen == true)
+                        {
+                            break;
+                        }
                         GenugKartenImStapel();
                         AktiverSpieler.ZiehtKarte(Stapel);
                         AktiverSpieler.CardIndex = null;
@@ -94,6 +106,8 @@ namespace UNO.Model
             }
             if (GelegteKarten.Last().Typ == KartenTyp.Ziehen && !NichtGelegt)
             {
+                AllSpieler[1].Ziehen = true;
+                AktiverSpieler.Ziehen = false;
                 KartenZiehen += 2;
             }
             else if (KartenZiehen != 0)
@@ -104,6 +118,7 @@ namespace UNO.Model
                     AktiverSpieler.ZiehtKarte(Stapel);
                 }
                 KartenZiehen = 0;
+                AktiverSpieler.Ziehen = false;
             }
             stopWatch.Stop();
             if(AktiverSpieler.Karten.Count == 0)
