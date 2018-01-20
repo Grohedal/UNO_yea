@@ -42,35 +42,6 @@ namespace UNO.Model
             Socket.Send(json);
         }
 
-        public bool KannSpielerLegen(IKarte karte)
-        {
-            bool kannLegen = false;
-            foreach (ZahlKarte k in Karten)
-            {
-                ZahlKarte zk = (ZahlKarte)karte;
-                if (k.Farbe == karte.Farbe || zk.Zahl == k.Zahl)
-                {
-                    kannLegen = true;
-                }
-                else
-                {
-                    kannLegen = false;
-                }
-            }
-            foreach (IKarte k in Karten)
-            {
-                if (k.Farbe == karte.Farbe || k.Typ == karte.Typ)
-                {
-                    kannLegen = true;
-                }
-                else
-                {
-                    kannLegen = false;
-                }
-            }
-            return kannLegen;
-        }
-
         public void OnSend(string message)
         {
             if(message != "Ping")
