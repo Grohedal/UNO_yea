@@ -46,7 +46,7 @@ namespace UNO.Model
         private void Spielzug()
         {
             AktiverSpieler = AllSpieler.First();
-            
+
             if (AktiverSpieler.Aussetzen == true)
             {
                 NächsterSpieler();
@@ -64,6 +64,7 @@ namespace UNO.Model
                 
             }
 
+            NichtGelegt = true;
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             //NichtGelegt = AktiverSpieler.KannSpielerLegen(GelegteKarten.Last());
@@ -75,8 +76,7 @@ namespace UNO.Model
                     if (VersuchtKarteLegen(gelegteKarteSpieler))
                     {
                         LegtKarte(gelegteKarteSpieler);
-                        AktiverSpieler.CardIndex = null;
-                        NächsterSpieler();
+                        NichtGelegt = false;
                     }
                     else
                     {
@@ -98,13 +98,10 @@ namespace UNO.Model
                 }
                 KartenZiehen = 0;
             }
-            else
-            {
-                AktiverSpieler.ZiehtKarte(Stapel);
-            }
             stopWatch.Stop();
             if (AllSpieler.Count > 1)
             {
+                AktiverSpieler.CardIndex = null;
                 NächsterSpieler();
             }
         }
