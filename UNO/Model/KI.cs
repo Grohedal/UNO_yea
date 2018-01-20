@@ -76,5 +76,12 @@ namespace UNO.Model
         public void TeileSpielStand(IKarte gelegteKarte, bool aktiv)
         {
         }
+
+        public void HastGewonnen()
+        {
+            var obj = new { gewonnen = true };
+            var json = new JavaScriptSerializer().Serialize(obj);
+            Socket.Send(json);
+        }
     }
 }
