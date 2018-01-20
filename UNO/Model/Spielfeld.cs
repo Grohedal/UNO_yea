@@ -206,6 +206,7 @@ namespace UNO.Model
             }
         }
 
+
         public bool VersuchtKarteLegen(IKarte karte)
         {
             IKarte obersteKarte = GelegteKarten.Last();
