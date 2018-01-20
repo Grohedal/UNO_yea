@@ -4,101 +4,118 @@
     <link href="https://fonts.googleapis.com/css?family=Bellefair" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="Cards.css" rel="stylesheet"/>
-
     <script>
-        $(window).on('load', function () {
-        });
-        testy = false;
+        class Uno {
+            constructor(connection) {
+                this.connection = connection;
+                this.specialCards = ['miss', 'switch', 'take-two'];
+                this.nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+                this.color = ['yellow', 'red', 'blue', 'green', ' '];
+                this.stapel = "";
+                this.hand = "";
+                this.state = false;
+
+            }
+
+            GetState() {
+                return this.state;
+            }
+
+
+            Message(message) { 
+                var data = JSON.parse(message);
+                if (data.aktiv != undefined) {
+                    this.state = data.aktiv;
+                }
+                if (data.hand != undefined) {
+                    this.UpdateHand(data.hand);
+                }
+                if (data.aktuelleKarte != undefined) {
+                    this.UpdateStapel(data.aktuelleKarte);
+                }
+                this.UpdateView();
+
+            }
+
+            SpieleKarte(id) {
+                this.connection.send(id);
+            }
+
+            UpdateView() {
+                $('#hand').html(this.hand);
+                $('#stapel').html(this.stapel);
+                if (this.state) {
+                    $('#state').html('');
+                } else {
+                    $('#state').html('<div class="info-text">Bub du bist dran!!!</div>');
+                }
+                this.hand = "";
+                this.stapel = "";
+            }
+
+            UpdateStapel(stapel) {
+                if (this.stapel.Typ != undefined) {
+                    this.stapel += '<div  class="card ' + this.specialCards[stapel.Typ] + ' ' + this.color[stapel.Farbe] + ' ' + '">' +
+                        '    <div class="small"></div>' +
+                        '</div>';
+                } else {
+                    this.stapel += '<div class="card ' + this.nr[stapel.Zahl] + ' ' + this.color[stapel.Farbe] + ' ' + '">' +
+                        '    <div class="small"></div>' +
+                        '</div>';
+                }
+            }
+
+            UpdateHand(handKarten) {
+                var length = handKarten.length;
+                for (var i = 0; i < length; i++) {
+                    if (handKarten[i].Typ != undefined) {
+                        this.hand += '<div id="card-' + i + '" class="card ' + this.specialCards[handKarten[i].Typ] + ' ' + this.color[handKarten[i].Farbe] + '">' +
+                            '    <div class="small"></div>' +
+                            '</div>';
+                    } else {
+                        this.hand += '<div id="card-' + i + '"  class="card ' + this.nr[handKarten[i].Zahl] + ' ' + this.color[handKarten[i].Farbe] + '" >' +
+                            '    <div class="small"></div>' +
+                            '</div>';
+                    }
+                }
+            }
+
+        }
+
+    $(document).ready(function () {
         var connection = new WebSocket('ws://localhost:666');
+
+        const uno = new Uno(connection);
 
         // When the connection is open, send some data to the server
         connection.onopen = function () {
             connection.send('Ping'); // Send the message 'Ping' to the server
-        };
+        }
 
         // Log errors
         connection.onerror = function (error) {
             console.log('WebSocket Error ' + error);
-        };
+        }
 
         // Log messages from the server
         connection.onmessage = function (e) {
-            var res = JSON.parse(e.data);
-            console.log(res);
-            UpdateHand(res.hand);
-            UpdateStapel(res.aktuelleKarte);
-            UpdateSpieler(res.aktiv)
-        };
-
-        function UpdateSpieler(toggle) {
-            if (toggle) {
-                testy = true;
-               // $('#info').toggle('not-visible');
-            } else {
-                testy = false;
-                //$('#info').toggle('not-visible');
-                $('#info').html(toggle);
-            }
-
+            uno.Message(e.data);
         }
+        $("#hand").click('.card', function (e) {
+            uno.SpieleKarte(e.target.id);
 
-        function UpdateStapel(stapel) {
-            var specialCards = ['miss', 'switch', 'take-two'];
-            var nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-            var color = ['yellow', 'red', 'blue', 'green', ' '];
-            var stapelKarte = "";
-            if (stapel.Typ != undefined) {
-                stapelKarte += '<div  class="card ' + specialCards[stapel.Typ] + ' ' + color[stapel.Farbe] + ' ' + '">' +
-                    '    <div class="small"></div>' +
-                    '</div>';
-            } else {
-                stapelKarte += '<div class="card ' + nr[stapel.Zahl] + ' ' + color[stapel.Farbe] + ' ' + '">' +
-                    '    <div class="small"></div>' +
-                    '</div>';
-            }
-            $('#stapel').html(stapelKarte);
+        });
+    });
 
-        }
 
-        function UpdateHand(hand) {
-            var specialCards = ['miss', 'switch', 'take-two'];
-            var nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-            var color = ['yellow', 'red', 'blue', 'green', ' '];
-
-            var handStr = "";
-
-            $(hand).each(function (i, j) {
-                
-                if (j.Typ != undefined) {
-                    handStr += '<div id="card-' + i + '" class="card ' + specialCards[j.Typ] + ' ' + color[j.Farbe] + ' ' + '">' +
-                        '    <div class="small"></div>' +
-                        '</div>';
-                } else {
-                    handStr += '<div id="card-' + i + '"  class="card ' + nr[j.Zahl] + ' ' + color[j.Farbe] + ' ' + '">' +
-                        '    <div class="small"></div>' +
-                        '</div>';
-                }
-
-            });
-            $('#hand').html(handStr);
-            $(document).ready(function () {
-                $('.card').on('click', function (event) {
-                    var id = event.target.id;
-                    connection.send(id);
-                })
-            });
-        }
 
     </script>
 </head>
 <body>
-    <div id="info" class="not-visible info-text">Bub du bist dran!!!</div>
-    <div id="stapel">
-
-    </div>
-    <div id="hand">
-
-    </div>
+    <div id="info"></div>
+    <div id="state"></div>
+    <div id="stapel"></div>
+    <div id="hand"></div>
 
 </body>
 </html>
