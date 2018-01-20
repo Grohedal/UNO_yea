@@ -45,6 +45,8 @@ namespace UNO.Model
 
         private void Spielzug()
         {
+
+
             AktiverSpieler = AllSpieler.First();
 
             if (AktiverSpieler.Aussetzen == true)
@@ -80,6 +82,7 @@ namespace UNO.Model
                     }
                     else
                     {
+                        GenugKartenImStapel();
                         AktiverSpieler.ZiehtKarte(Stapel);
                         AktiverSpieler.CardIndex = null;
                         NächsterSpieler();
@@ -94,6 +97,7 @@ namespace UNO.Model
             {
                 for (int i = 0; i < KartenZiehen; i++)
                 {
+                    GenugKartenImStapel();
                     AktiverSpieler.ZiehtKarte(Stapel);
                 }
                 KartenZiehen = 0;
@@ -103,6 +107,22 @@ namespace UNO.Model
             {
                 AktiverSpieler.CardIndex = null;
                 NächsterSpieler();
+            }
+        }
+
+        private void GenugKartenImStapel()
+        {
+            if (Stapel.Count == 0)
+            {
+                if (GelegteKarten.Count > 4)
+                {
+                    Stapel = new Queue<IKarte>(GelegteKarten.GetRange(0, GelegteKarten.Count - 1));
+                    GelegteKarten.RemoveRange(0, GelegteKarten.Count - 1);
+                }
+                else
+                {
+                    InitStapel();
+                }
             }
         }
 
