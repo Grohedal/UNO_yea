@@ -45,9 +45,9 @@
                 $('#hand').html(this.hand);
                 $('#stapel').html(this.stapel);
                 if (this.state) {
-                    $('#state').html('');
-                } else {
                     $('#state').html('<div class="info-text">Bub du bist dran!!!</div>');
+                } else {
+                    $('#state').html('');
                 }
                 this.hand = "";
                 this.stapel = "";
@@ -102,7 +102,8 @@
             uno.Message(e.data);
         }
         $("#hand").click('.card', function (e) {
-            uno.SpieleKarte(e.target.id);
+            if (uno.GetState())
+                uno.SpieleKarte(e.target.id);
 
         });
     });

@@ -151,6 +151,7 @@ namespace UNO.Model
             }
         }
 
+
         public bool VersuchtKarteLegen(IKarte karte)
         {
             IKarte obersteKarte = GelegteKarten.Last();
@@ -231,7 +232,7 @@ namespace UNO.Model
             GelegteKarten.Add(Stapel.Dequeue());
             if (GelegteKarten[0].Typ == KartenTyp.Ziehen)
             {
-                AktiverSpieler.Ziehen = true;
+                AllSpieler[0].Ziehen = true;
                 KartenZiehen = 2;
             }
             Spielzug();
