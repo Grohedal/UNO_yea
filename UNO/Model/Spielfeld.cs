@@ -72,7 +72,6 @@ namespace UNO.Model
                 {
                     temp.TeileSpielStand(GelegteKarten.Last(), false);
                 }
-
             }
 
             NichtGelegt = true;
@@ -241,13 +240,19 @@ namespace UNO.Model
 
         private void SpielNeustart()
         {
-            foreach (ISpieler sp in AllSpieler)
+            List<Spieler> AlleSpielerImSpiel = AllSpieler.Concat(FertigeSpieler).ToList();
+            foreach (ISpieler sp in AlleSpielerImSpiel)
             {
-                sp.Karten.RemoveRange(0, sp.Karten.Count - 1);
+                if (sp.Karten.Count > 0)
+                {
+                    sp.Karten.RemoveRange(0, sp.Karten.Count - 1);
+                }
             }
+            AllSpieler.RemoveRange(0, AllSpieler.Count - 1);
             FertigeSpieler.RemoveRange(0, FertigeSpieler.Count - 1);
             Stapel.Clear();
             GelegteKarten.RemoveRange(0, GelegteKarten.Count - 1);
+            AllSpieler = AlleSpielerImSpiel;
             InitStapel();
             SpielStart();
         }
