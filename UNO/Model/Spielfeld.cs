@@ -12,6 +12,7 @@ namespace UNO.Model
     class Spielfeld
     {
         public List<Spieler> AllSpieler = new List<Spieler>();
+        public List<Spieler> CurrentSpieler = new List<Spieler>();
         List<Spieler> FertigeSpieler = new List<Spieler>();
         Queue<IKarte> Stapel = new Queue<IKarte>();
         List<IKarte> GelegteKarten = new List<IKarte>();
@@ -23,6 +24,7 @@ namespace UNO.Model
         {
             KartenZiehen = 0;
             AllSpieler = spieler.ToList();
+            CurrentSpieler = spieler.ToList();
             InitStapel();
         }
 
@@ -56,14 +58,15 @@ namespace UNO.Model
 
             foreach (ISpieler temp in AllSpieler)
             {
-                if(temp == AktiverSpieler)
+                if (temp == AktiverSpieler)
                 {
                     temp.TeileSpielStand(GelegteKarten.Last(), true);
-                } else
+                }
+                else
                 {
                     temp.TeileSpielStand(GelegteKarten.Last(), false);
                 }
-                
+
             }
 
             NichtGelegt = true;
@@ -72,9 +75,9 @@ namespace UNO.Model
             //NichtGelegt = AktiverSpieler.KannSpielerLegen(GelegteKarten.Last());
             while (stopWatch.ElapsedMilliseconds < 20000 && NichtGelegt)
             {
-                if(AktiverSpieler.CardIndex != null)
+                if (AktiverSpieler.CardIndex != null)
                 {
-                    IKarte gelegteKarteSpieler = AktiverSpieler.Karten[(int) AktiverSpieler.CardIndex];
+                    IKarte gelegteKarteSpieler = AktiverSpieler.Karten[(int)AktiverSpieler.CardIndex];
                     if (VersuchtKarteLegen(gelegteKarteSpieler))
                     {
                         LegtKarte(gelegteKarteSpieler);
@@ -103,11 +106,22 @@ namespace UNO.Model
                 KartenZiehen = 0;
             }
             stopWatch.Stop();
+            if(AktiverSpieler.Karten.Count == 0)
+            {
+                SpielerGewinnt();
+            }
             if (AllSpieler.Count > 1)
             {
                 AktiverSpieler.CardIndex = null;
                 NächsterSpieler();
             }
+            //SpielNeustart();
+        }
+
+        private void SpielerGewinnt()
+        {
+            AllSpieler.Remove(AktiverSpieler);
+            FertigeSpieler.Add(AktiverSpieler);
         }
 
         private void GenugKartenImStapel()
@@ -205,6 +219,17 @@ namespace UNO.Model
             Austeilen();
             GelegteKarten.Add(Stapel.Dequeue());
             Spielzug();
+        }
+
+        private void SpielNeustart()
+        {
+            AllSpieler.RemoveRange(0, AllSpieler.Count - 1);
+            FertigeSpieler.RemoveRange(0, FertigeSpieler.Count - 1);
+            Stapel.Clear();
+            GelegteKarten.RemoveRange(0, GelegteKarten.Count - 1);
+            AllSpieler = CurrentSpieler;
+            InitStapel();
+            SpielStart();
         }
     }
 }
