@@ -160,6 +160,7 @@ namespace UNO.Model
             }
             else if (KartenZiehen == 0 && NichtGelegt)
             {
+                GenugKartenImStapel();
                 AktiverSpieler.ZiehtKarte(Stapel);
             }
             stopWatch.Stop();
