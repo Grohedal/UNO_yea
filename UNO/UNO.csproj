@@ -55,6 +55,8 @@
     <Compile Include="Model\ISpieler.cs" />
     <Compile Include="Model\KartenFarbe.cs" />
     <Compile Include="Model\KartenTyp.cs" />
+    <Compile Include="Model\Karten\AussetzenKarte.cs" />
+    <Compile Include="Model\Karten\RichtungswechselKarte.cs" />
     <Compile Include="Model\Karten\ZahlKarte.cs" />
     <Compile Include="Model\Karten\ZweiZiehenKarte.cs" />
     <Compile Include="Model\KI.cs" />
