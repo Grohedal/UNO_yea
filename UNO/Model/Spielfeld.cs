@@ -233,6 +233,11 @@ namespace UNO.Model
         {
             Austeilen();
             GelegteKarten.Add(Stapel.Dequeue());
+            if (GelegteKarten[0].Typ == KartenTyp.Ziehen)
+            {
+                AktiverSpieler.Ziehen = true;
+                KartenZiehen = 2;
+            }
             Spielzug();
         }
 
