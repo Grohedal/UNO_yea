@@ -63,6 +63,14 @@ namespace UNO.Model
 
             if (AktiverSpieler.Aussetzen == true)
             {
+                if (AktiverSpieler.Ki == true)
+                {
+                    ((KI)AktiverSpieler).Aussetzen = false;
+                }
+                else
+                {
+                    ((Spieler)AktiverSpieler).Aussetzen = false;
+                }
                 NächsterSpieler();
             }
             foreach (ISpieler temp in AllSpieler)
@@ -282,7 +290,7 @@ namespace UNO.Model
 
         private void Richtungswechsel()
         {
-            Stapel.Reverse();
+            AllSpieler.Reverse();
         }
 
         private void NächsterSpieler()
@@ -301,13 +309,17 @@ namespace UNO.Model
                 {
                     continue;
                 }
-
-                for (int i = 0; i <= 9; i++)
+                Stapel.Enqueue(new ZahlKarte(0, farbe));
+                for (int j = 0; j < 2; j++)
                 {
-                    Stapel.Enqueue(new ZahlKarte(i, farbe));
+                    for (int i = 1; i <= 9; i++)
+                    {
+                        Stapel.Enqueue(new ZahlKarte(i, farbe));
+                    }
+                    Stapel.Enqueue(new ZweiZiehenKarte(farbe));
+                    Stapel.Enqueue(new RichtungswechselKarte(farbe));
+                    Stapel.Enqueue(new AussetzenKarte(farbe));
                 }
-
-                Stapel.Enqueue(new ZweiZiehenKarte(farbe));
             }
 
             Stapel = Stapel.Mischen();
