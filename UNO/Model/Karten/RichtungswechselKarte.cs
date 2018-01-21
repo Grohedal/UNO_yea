@@ -8,7 +8,7 @@ namespace UNO.Model.Karten
 {
     class RichtungswechselKarte :IKarte
     {
-        KartenTyp IKarte.Typ => KartenTyp.Richtungswechsel;
+        public KartenTyp Typ => KartenTyp.Richtungswechsel;
 
         public KartenFarbe Farbe { get; }
 
