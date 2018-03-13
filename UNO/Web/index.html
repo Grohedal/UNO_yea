@@ -119,6 +119,10 @@
             }
 
         });
+
+        $("#testy").click(function (e) {
+            connection.send("START");
+        });
     });
 
 
@@ -126,6 +130,7 @@
     </script>
 </head>
 <body>
+    <div id="testy">Starten</div>
     <div id="spielfeld">
         <div id="stapel"></div>
         <div id="info"></div>

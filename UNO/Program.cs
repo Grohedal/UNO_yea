@@ -15,6 +15,7 @@ namespace UNO
         const int WebSocketPort = 666;
         static List<ISpieler> AllSpieler = new List<ISpieler>();
         static Spielfeld DasSpielfeld;
+        static Lobby MeineLobby;
 
         static void Main(string[] args)
         {
@@ -35,12 +36,18 @@ namespace UNO
             Spieler NewSpieler = new Spieler("asdasd", socket);
             NewSpieler.Socket.OnMessage = (string message) => NewSpieler.OnSend(message);
             AllSpieler.Add(NewSpieler);
-            
+
+         
             if(AllSpieler.Count == 1)
             {
                 DasSpielfeld = new Spielfeld(AllSpieler);
-                DasSpielfeld.AllSpieler = AllSpieler;
-                DasSpielfeld.SpielStart();
+                MeineLobby = new Lobby(DasSpielfeld, NewSpieler);
+                MeineLobby.Init();
+                //DasSpielfeld.AllSpieler = AllSpieler;
+                //DasSpielfeld.SpielStart();
+            } else
+            {
+                MeineLobby.UpdateSpieler(AllSpieler);
             }
             //if(AllSpieler.Count < 3)
             //{

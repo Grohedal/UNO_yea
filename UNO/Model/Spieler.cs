@@ -19,6 +19,8 @@ namespace UNO.Model
         public bool Ki { get; }
         public int? CardIndex { get; set; }
 
+        public bool Spielstarten { get; set; }
+
 
 
         public Spieler(string name, IWebSocketConnection socket)
@@ -26,6 +28,7 @@ namespace UNO.Model
             Ki = false;
             Name = name;
             Socket = socket;
+            Spielstarten = false;
         }
 
         //public event Action ZiehtKarte;
@@ -45,7 +48,9 @@ namespace UNO.Model
 
         public void OnSend(string message)
         {
-            if(message != "Ping")
+            if (message == "START") {
+                Spielstarten = true;
+            } else if(message != "Ping")
             {
                 string s = message;
                 s = s.Replace("card-", "");
