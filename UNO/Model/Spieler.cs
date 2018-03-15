@@ -21,6 +21,8 @@ namespace UNO.Model
 
         public bool Spielstarten { get; set; }
 
+        public Lobby DieLobby { get; }
+
 
 
         public Spieler(string name, IWebSocketConnection socket)
@@ -29,6 +31,15 @@ namespace UNO.Model
             Name = name;
             Socket = socket;
             Spielstarten = false;
+        }
+
+        public Spieler(string name, IWebSocketConnection socket, Lobby dieLobby)
+        {
+            Ki = false;
+            Name = name;
+            Socket = socket;
+            Spielstarten = false;
+            DieLobby = dieLobby;
         }
 
         //public event Action ZiehtKarte;
@@ -50,6 +61,11 @@ namespace UNO.Model
         {
             if (message == "START") {
                 Spielstarten = true;
+            } else if(message == "INFO") {
+                var obj = new { typ = "info", tische = DieLobby.Tische };
+                var json = new JavaScriptSerializer().Serialize(obj);
+                Socket.Send(json);
+
             } else if(message != "Ping")
             {
                 string s = message;

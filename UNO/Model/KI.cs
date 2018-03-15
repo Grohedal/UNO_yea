@@ -20,6 +20,7 @@ namespace UNO.Model
         public bool Ziehen { get; set; }
         public bool Ki { get; }
         public int? CardIndex { get; set; }
+        public bool Spielstarten { get; }
 
         public KI(string name, IWebSocketConnection socket)
         {

@@ -17,6 +17,8 @@ namespace UNO.Model
         bool Ziehen { get; }
         int? CardIndex { get;  }
 
+        bool Spielstarten { get; }
+
         //event Action ZiehtKarte;
         void ZiehtKarte(Queue<IKarte> stapel);
         

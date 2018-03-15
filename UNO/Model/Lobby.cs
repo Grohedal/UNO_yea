@@ -9,19 +9,24 @@ namespace UNO.Model
 {
     class Lobby
     {
-        public Spielfeld Tisch;
+        public List<Spielfeld> Tische { get; }
+        public List<ISpieler> AlleSpieler { get; }
 
-        public Spieler Tischführer;
-
-        public Lobby(Spielfeld tisch, Spieler führer)
+        public Lobby()
         {
-            Tisch = tisch;
-            Tischführer = führer;
+            Tische = new List<Spielfeld>();
+            AlleSpieler = new List<ISpieler>();
+
         }
 
-        public void Init()
+        public Lobby(Spielfeld tisch)
         {
-            while(!Tischführer.Spielstarten)
+            Tische.Add(tisch);
+        }
+
+        public void Init(Spielfeld Tisch)
+        {
+            while(!Tisch.Tischführer.Spielstarten)
             {
                 Thread.Sleep(200);
             }
@@ -29,7 +34,12 @@ namespace UNO.Model
             Tisch.SpielStart();
         }
 
-        public void UpdateSpieler(List<ISpieler> spieler)
+        public void SpielerHinzufügen(ISpieler Spieler)
+        {
+            AlleSpieler.Add(Spieler);
+        }
+
+        public void UpdateSpieler(List<ISpieler> spieler, Spielfeld Tisch)
         {
             Tisch.AllSpieler = spieler;
         }

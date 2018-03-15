@@ -22,8 +22,11 @@
             }
 
 
-            Message(message) { 
+            Message(message) {
                 var data = JSON.parse(message);
+                if (data.typ != undefined && date.typ == 'info') {
+                    console.log(data);
+                }
                 if (data.aktiv != undefined) {
                     this.state = data.aktiv;
                 }
@@ -97,7 +100,7 @@
 
         // When the connection is open, send some data to the server
         connection.onopen = function () {
-            connection.send('Ping'); // Send the message 'Ping' to the server
+            connection.send('INFO'); // Send the message 'Ping' to the server
         }
 
         // Log errors
@@ -123,6 +126,7 @@
 
         $("#testy").click(function (e) {
             connection.send("START");
+            $('#testy').css('display', 'none');
         });
     });
 

@@ -16,6 +16,7 @@ namespace UNO.Model
         Queue<IKarte> Stapel = new Queue<IKarte>();
         List<IKarte> GelegteKarten = new List<IKarte>();
         ISpieler AktiverSpieler;
+        public ISpieler Tischführer { get; set; }
         bool NichtGelegt = true;
         int KartenZiehen;
 
@@ -23,6 +24,7 @@ namespace UNO.Model
         {
             KartenZiehen = 0;
             AllSpieler = spieler.ToList();
+            Tischführer = AllSpieler.First();
             InitStapel();
         }
 

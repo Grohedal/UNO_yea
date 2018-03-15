@@ -26,7 +26,7 @@ namespace UNO
             WebSocketServer wss = new WebSocketServer($"ws://{Ip}:{WebSocketPort}");
             wss.Start(socket => {
                 socket.OnOpen = () => socket.Send("Halloasdasdasd");
-                socket.OnOpen = () => NewSpieler(socket);
+                socket.OnOpen = () => LobbyÜbersicht(socket);
             });
 
 #if DEBUG
@@ -34,24 +34,36 @@ namespace UNO
 #endif
         }
 
-        private static void NewSpieler(IWebSocketConnection socket)
+        private static void LobbyÜbersicht(IWebSocketConnection socket)
         {
-            Spieler NewSpieler = new Spieler("asdasd", socket);
-            NewSpieler.Socket.OnMessage = (string message) => NewSpieler.OnSend(message);
-            AllSpieler.Add(NewSpieler);
-
-         
-            if(AllSpieler.Count == 1)
+            if(MeineLobby == null)
             {
-                DasSpielfeld = new Spielfeld(AllSpieler);
-                MeineLobby = new Lobby(DasSpielfeld, NewSpieler);
-                MeineLobby.Init();
-            } else
-            {
-                MeineLobby.UpdateSpieler(AllSpieler);
+                MeineLobby = new Lobby();
             }
+            Spieler CurrentSpieler = new Spieler("asdasd", socket, MeineLobby);
+            CurrentSpieler.Socket.OnMessage = (string message) => CurrentSpieler.OnSend(message);
+            MeineLobby.SpielerHinzufügen(CurrentSpieler);
 
         }
+
+        //private static void NewSpieler(IWebSocketConnection socket)
+        //{
+        //    Spieler NewSpieler = new Spieler("asdasd", socket);
+        //    NewSpieler.Socket.OnMessage = (string message) => NewSpieler.OnSend(message);
+        //    AllSpieler.Add(NewSpieler);
+
+         
+        //    if(AllSpieler.Count == 1)
+        //    {
+        //        DasSpielfeld = new Spielfeld(AllSpieler);
+        //        MeineLobby = new Lobby(DasSpielfeld, NewSpieler);
+        //        MeineLobby.Init();
+        //    } else
+        //    {
+        //        MeineLobby.UpdateSpieler(AllSpieler);
+        //    }
+
+        //}
 
         private static string GetLocalIPAddress()
         {
