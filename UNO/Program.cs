@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using UNO.Model;
@@ -13,6 +15,7 @@ namespace UNO
     {
         const int HttpPort = 1337;
         const int WebSocketPort = 666;
+        static string Ip = GetLocalIPAddress();
         static List<ISpieler> AllSpieler = new List<ISpieler>();
         static Spielfeld DasSpielfeld;
         static Lobby MeineLobby;
@@ -20,14 +23,14 @@ namespace UNO
         static void Main(string[] args)
         {
             new SimpleHTTPServer("Web", HttpPort);
-            WebSocketServer wss = new WebSocketServer($"ws://0.0.0.0:{WebSocketPort}");
+            WebSocketServer wss = new WebSocketServer($"ws://{Ip}:{WebSocketPort}");
             wss.Start(socket => {
                 socket.OnOpen = () => socket.Send("Halloasdasdasd");
                 socket.OnOpen = () => NewSpieler(socket);
             });
 
 #if DEBUG
-            Process.Start($"http://localhost:{HttpPort}");
+            Process.Start($"http://{Ip}:{HttpPort}");
 #endif
         }
 
@@ -43,21 +46,24 @@ namespace UNO
                 DasSpielfeld = new Spielfeld(AllSpieler);
                 MeineLobby = new Lobby(DasSpielfeld, NewSpieler);
                 MeineLobby.Init();
-                //DasSpielfeld.AllSpieler = AllSpieler;
-                //DasSpielfeld.SpielStart();
             } else
             {
                 MeineLobby.UpdateSpieler(AllSpieler);
             }
-            //if(AllSpieler.Count < 3)
-            //{
-            //    DasSpielfeld = new Spielfeld(AllSpieler);
-            //}
-            //else
-            //{
-            //    DasSpielfeld.AllSpieler = AllSpieler;
-            //    DasSpielfeld.SpielStart();
-            //}
+
+        }
+
+        private static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
     }
 }

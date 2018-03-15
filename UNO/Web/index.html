@@ -89,8 +89,9 @@
 
         }
 
-    $(document).ready(function () {
-        var connection = new WebSocket('ws://localhost:666');
+        $(document).ready(function () {
+            var domain = document.location.hostname;
+        var connection = new WebSocket('ws://'+ domain +':666');
 
         const uno = new Uno(connection);
 
