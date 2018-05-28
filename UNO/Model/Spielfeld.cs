@@ -28,6 +28,11 @@ namespace UNO.Model
             InitStapel();
         }
 
+        public void RemoveSpieler(ISpieler spielerZumEntfernen)
+        {
+            // TODO Speiler entfernen. Irgendwas mit seinen Karten machen oder durch Knud ersetzten
+        }
+
         private void Austeilen()
         {
             for (int i = 0; i < 7; i++)

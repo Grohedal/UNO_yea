@@ -102,7 +102,7 @@ namespace UNO.Controller
             // Fall unterscheidung:
             if(message == "Ping")
             {
-            // 1 Ping
+                socket.Send("Pong");
 
             } else if(message.Contains("erstelleTisch"))
             {
@@ -116,6 +116,7 @@ namespace UNO.Controller
             } else if(message.Contains("exitTable-"))
             {
                 //4 Hat tisch verlassen
+                SpielerLeftTable(message, currentSpieler, socket);
 
             } else if(message == "GoodBye")
             {
@@ -142,9 +143,11 @@ namespace UNO.Controller
         private void SpielerTischBeitretten(string message, ISpieler currentSpieler, IWebSocketConnection socket)
         {
             // MEssage ist TischId
-            if(int.TryParse(message, out int tischId))
+            //if(int.TryParse(message, out int tischId))
+            int tischId = -1;
+            if(int.TryParse(message, out tischId))
             {
-                if (tische.ElementAtOrDefault(tischId) != null)
+                if (tischId >= 0 && tische.ElementAtOrDefault(tischId) != null)
                 {
                     if(tische[tischId].IstOpen)
                     {
@@ -178,6 +181,42 @@ namespace UNO.Controller
         private void SpielerLeftTable(string message, ISpieler currentSpieler, IWebSocketConnection socket)
         {
             // TODO
+            //if(int.TryParse(message, out int tischId))
+            int tischId = -1;
+            if (int.TryParse(message, out tischId))
+            {
+                if (tischId >= 0 && tische.ElementAtOrDefault(tischId) != null)
+                {
+                    if (tische[tischId].IstOpen)
+                    {
+                        if (tische[tischId].AllSpieler.Contains(currentSpieler))
+                        {
+                            tische[tischId].RemoveSpieler(currentSpieler);
+                        }
+
+                    }
+                    else
+                    {
+
+                        var obj = new { suc = false, msg = "Tisch ist geschlossen!" };
+                        var json = new JavaScriptSerializer().Serialize(obj);
+                        socket.Send(json);
+                    }
+                }
+                else
+                {
+                    var obj = new { suc = false, msg = "Invalide Tisch-Id" };
+                    var json = new JavaScriptSerializer().Serialize(obj);
+                    socket.Send(json);
+                }
+
+            }
+            else
+            {
+                var obj = new { suc = false, msg = "Invalide Tisch-Id" };
+                var json = new JavaScriptSerializer().Serialize(obj);
+                socket.Send(json);
+            }
         }
 
         private void SpielerLeft(string message, ISpieler currentSpieler, IWebSocketConnection socket)
