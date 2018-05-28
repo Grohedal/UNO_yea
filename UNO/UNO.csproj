@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\UnoController.cs" />
     <Compile Include="Model\Extensions.cs" />
     <Compile Include="Model\IKarte.cs" />
     <Compile Include="Model\ISpieler.cs" />
@@ -60,7 +61,6 @@
     <Compile Include="Model\Karten\ZahlKarte.cs" />
     <Compile Include="Model\Karten\ZweiZiehenKarte.cs" />
     <Compile Include="Model\KI.cs" />
-    <Compile Include="Model\Lobby.cs" />
     <Compile Include="Model\Spieler.cs" />
     <Compile Include="Model\Spielfeld.cs" />
     <Compile Include="Program.cs" />

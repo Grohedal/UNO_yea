@@ -19,6 +19,8 @@ namespace UNO.Model
         bool NichtGelegt = true;
         int KartenZiehen;
 
+        public bool IstOpen {get; set;}
+
         public Spielfeld(IEnumerable<ISpieler> spieler)
         {
             KartenZiehen = 0;

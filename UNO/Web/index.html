@@ -89,26 +89,63 @@
 
         }
 
+        class Lobby {
+            constructor(connection) {
+                this.connection = connection;
+            }
+
+
+
+        }
+
+        class Game {
+            constructor(tisch, lobby) {
+                this.tisch = tisch;
+                this.lobby = lobby;
+            }
+        }
         $(document).ready(function () {
             var domain = document.location.hostname;
-        var connection = new WebSocket('ws://'+ domain +':666');
+            var connectionSpieler = new WebSocket('ws://' + domain + ':666');
 
-        const uno = new Uno(connection);
+            const uno = new Uno(connectionSpieler);
 
         // When the connection is open, send some data to the server
-        connection.onopen = function () {
-            connection.send('Ping'); // Send the message 'Ping' to the server
+            connectionSpieler.onopen = function () {
+                connectionSpieler.send('Ping');
+                // Send the message 'Ping' to the server
         }
 
         // Log errors
-        connection.onerror = function (error) {
+            connectionSpieler.onerror = function (error) {
             console.log('WebSocket Error ' + error);
         }
 
         // Log messages from the server
-        connection.onmessage = function (e) {
+            connectionSpieler.onmessage = function (e) {
             uno.Message(e.data);
-        }
+            }
+      
+            var connectionLobby = new WebSocket('ws://' + domain + ':668');
+            setTimeout(function () {
+                connectionLobby.onopen = function () {
+                    connectionLobby.send('Ping');
+                    // Send the message 'Ping' to the server
+                }
+                // Log errors
+                connectionLobby.onerror = function (error) {
+                    console.log('WebSocket Error ' + error);
+                }
+
+                // Log messages from the server
+                connectionLobby.onmessage = function (e) {
+                    console.log(e.data);
+                }
+                setTimeout(function () {
+                    connectionLobby.send("StartLobby");
+                }, 1000);
+            }, 1000);
+           
         $("#hand").click('.card', function (e) {
             if (uno.GetState()) {
                 uno.SpieleKarte(e.target.id);
@@ -122,7 +159,11 @@
         });
 
         $("#testy").click(function (e) {
-            connection.send("START");
+            connectionSpieler.send("START");
+        });
+
+        $("#tischerstellen").click(function (e) {
+            connectionLobby.send("erstelleTisch");
         });
     });
 
@@ -131,6 +172,7 @@
     </script>
 </head>
 <body>
+    <button id="tischerstellen">Tisch erstellen</button>
     <div id="testy">Starten</div>
     <div id="spielfeld">
         <div id="stapel"></div>
