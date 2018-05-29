@@ -1,4 +1,5 @@
 ﻿using Fleck;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,9 +46,12 @@ namespace UNO.Controller
 
             websocketLobby = new WebSocketServer($"ws://{Ip}:{WebSocketPortLobby}");
 
+            var obj = new { suc = true, type = "iniT", msg = "erstellt" };
+            var json = new JavaScriptSerializer().Serialize(obj);
+
             websocketLobby.Start(socket => {
-                socket.OnOpen = () => socket.Send("Lobby");
-                socket.OnOpen = () => NewSpielerLobby(socket, AllSpieler.Last());
+                socket.OnOpen = () => socket.Send(json);
+                socket.OnOpen = () => NewSpielerLobby(socket);
             });
 
           
@@ -68,19 +72,23 @@ namespace UNO.Controller
             }
         }
 
-        private void NewSpielerLobby(IWebSocketConnection socket, ISpieler currentSpieler)
+        private void NewSpielerLobby(IWebSocketConnection socket)
         {
-            Console.WriteLine("NEwLobbSocket");
-            socket.OnMessage = (string message) => OnSend(message, currentSpieler, socket);
             socket.Send("connected");
+
+            socket.OnMessage = (string message) => OnSend(message, socket);
         }
 
 
         private void NewSpieler(IWebSocketConnection socket)
         {
             Console.WriteLine("NEwSpielerSocket");
-            Spieler NewSpieler = new Spieler("Spieler" + AllSpieler.Count, socket);
+            var spielerName = "Spieler" + AllSpieler.Count;
+            Spieler NewSpieler = new Spieler(spielerName, socket);
             NewSpieler.Socket.OnMessage = (string message) => NewSpieler.OnSend(message);
+            var obj = new { suc = true, type = "spielerName", msg = spielerName };
+            var json = new JavaScriptSerializer().Serialize(obj);
+            socket.Send(json);
             AllSpieler.Add(NewSpieler);
         }
 
@@ -97,33 +105,49 @@ namespace UNO.Controller
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
-        private void OnSend(string message, ISpieler currentSpieler, IWebSocketConnection socket)
+        private void OnSend(string message, IWebSocketConnection socket)
         {
-            // Fall unterscheidung:
-            if(message == "Ping")
+            try
             {
-                socket.Send("Pong");
+                JObject json = JObject.Parse(message);
+                // Wir haben ein Json Object
 
-            } else if(message.Contains("erstelleTisch"))
+                //var test = json.First;
+                ISpieler currentSpieler = AllSpieler.Where(x => x.Name == (string) json.First.First).First();
+                // Fall unterscheidung:
+                if (message == "Ping")
+                {
+                    socket.Send("Pong");
+
+                }
+                else if (message.Contains("erstelleTisch"))
+                {
+                    //2 Tisch erstellen
+                    SpielerTischErstellen(currentSpieler, socket);
+
+                }
+                else if (message.Contains("betritt-"))
+                {
+                    //3 Tisch beitretten
+
+                }
+                else if (message.Contains("exitTable-"))
+                {
+                    //4 Hat tisch verlassen
+                    SpielerLeftTable(message, currentSpieler, socket);
+
+                }
+                else if (message == "GoodBye")
+                {
+                    //5 Ist gegagngen Spieler Löschen
+
+
+                }
+            } catch
             {
-                //2 Tisch erstellen
-                SpielerTischErstellen(currentSpieler, socket);
-
-            } else if(message.Contains("betritt-"))
-            {
-            //3 Tisch beitretten
-
-            } else if(message.Contains("exitTable-"))
-            {
-                //4 Hat tisch verlassen
-                SpielerLeftTable(message, currentSpieler, socket);
-
-            } else if(message == "GoodBye")
-            {
-                //5 Ist gegagngen Spieler Löschen
-
-                
+                // Dunno
             }
+          
         }
 
         private void SpielerPing(ISpieler currentSpieler, IWebSocketConnection socket)

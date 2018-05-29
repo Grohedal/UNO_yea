@@ -3,12 +3,12 @@
 <head>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,700,500,100" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link href="Cards.css" rel="stylesheet"/>
+    <link href="Cards.css" rel="stylesheet" />
     <script>
         class Uno {
             constructor(connection) {
                 this.connection = connection;
-                this.specialCards = ['', '', 'take-two','','miss','','','','switch'];
+                this.specialCards = ['', '', 'take-two', '', 'miss', '', '', '', 'switch'];
                 this.nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
                 this.color = ['yellow', 'red', 'blue', 'green', ' '];
                 this.stapel = "";
@@ -22,7 +22,7 @@
             }
 
 
-            Message(message) { 
+            Message(message) {
                 var data = JSON.parse(message);
                 if (data.aktiv != undefined) {
                     this.state = data.aktiv;
@@ -90,12 +90,31 @@
         }
 
         class Lobby {
-            constructor(connection) {
-                this.connection = connection;
+            constructor(domain, data) {
+                var spielerName = data.msg;
+                var connection =  new WebSocket('ws://' + domain + ':668');
+                console.log(this.connection);
+
+                console.log(this);
+                connection.onopen = function () {
+                    connection.send(JSON.stringify({ spielerName: spielerName, type: "Ping" }));
+                    // Send the message 'Ping' to the server
+                }
+                // Log errors
+                connection.onerror = function (error) {
+                    console.log('WebSocket Error ' + error);
+                }
+
+                // Log messages from the server
+                connection.onmessage = function (e) {
+                    console.log(e.data);
+                }
+
+                 connection.send(JSON.stringify({ spielerName: spielerName, type: "Ping" }));
+ 
+
+                this.connection = connection;             
             }
-
-
-
         }
 
         class Game {
@@ -110,62 +129,48 @@
 
             const uno = new Uno(connectionSpieler);
 
-        // When the connection is open, send some data to the server
+            // When the connection is open, send some data to the server
             connectionSpieler.onopen = function () {
                 connectionSpieler.send('Ping');
                 // Send the message 'Ping' to the server
-        }
+            }
 
-        // Log errors
+            // Log errors
             connectionSpieler.onerror = function (error) {
-            console.log('WebSocket Error ' + error);
-        }
+                console.log('WebSocket Error ' + error);
+            }
 
-        // Log messages from the server
+            // Log messages from the server
             connectionSpieler.onmessage = function (e) {
-            uno.Message(e.data);
-            }
-      
-            var connectionLobby = new WebSocket('ws://' + domain + ':668');
-            setTimeout(function () {
-                connectionLobby.onopen = function () {
-                    connectionLobby.send('Ping');
-                    // Send the message 'Ping' to the server
-                }
-                // Log errors
-                connectionLobby.onerror = function (error) {
-                    console.log('WebSocket Error ' + error);
-                }
+                console.log(e.data);
+                var tempData = JSON.parse(e.data);
 
-                // Log messages from the server
-                connectionLobby.onmessage = function (e) {
-                    console.log(e.data);
+                if (tempData.type == "spielerName") {
+                    var connectionLobby = new Lobby(domain, tempData);
+                } else {
+                    uno.Message(e.data);
                 }
-                setTimeout(function () {
-                    connectionLobby.send("StartLobby");
-                }, 1000);
-            }, 1000);
-           
-        $("#hand").click('.card', function (e) {
-            if (uno.GetState()) {
-                uno.SpieleKarte(e.target.id);
-            } else {
-                $('#info').html('Du bist nicht dran Ingo !!').delay(3000).fadeOut(function () {
-                    $('#info').html('');
-                    $('#info').css('display', 'block');
-                });
             }
 
-        });
+            $("#hand").click('.card', function (e) {
+                if (uno.GetState()) {
+                    uno.SpieleKarte(e.target.id);
+                } else {
+                    $('#info').html('Du bist nicht dran Ingo !!').delay(3000).fadeOut(function () {
+                        $('#info').html('');
+                        $('#info').css('display', 'block');
+                    });
+                }
+            });
 
-        $("#testy").click(function (e) {
-            connectionSpieler.send("START");
-        });
+            $("#testy").click(function (e) {
+                connectionSpieler.send("START");
+            });
 
-        $("#tischerstellen").click(function (e) {
-            connectionLobby.send("erstelleTisch");
+            $("#tischerstellen").click(function (e) {
+                connectionLobby.send("erstelleTisch");
+            });
         });
-    });
 
 
 
