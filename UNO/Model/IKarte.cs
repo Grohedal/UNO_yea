@@ -9,6 +9,6 @@ namespace UNO.Model
     interface IKarte
     {
         KartenTyp Typ { get; }
-        KartenFarbe Farbe { get; }
+        KartenFarbe Farbe { get; set; }
     }
 }

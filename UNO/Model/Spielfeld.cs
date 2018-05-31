@@ -17,6 +17,7 @@ namespace UNO.Model
         List<IKarte> GelegteKarten = new List<IKarte>();
         ISpieler AktiverSpieler;
         bool NichtGelegt = true;
+        bool vierziehenAktiv = false;
         int KartenZiehen;
 
         public Spielfeld(IEnumerable<ISpieler> spieler)
@@ -53,8 +54,7 @@ namespace UNO.Model
 
         private void Spielzug()
         {
-
-            if(AllSpieler.Count == 1)
+            if (AllSpieler.Count == 1)
             {
                 SpielNeustart();
             }
@@ -113,18 +113,82 @@ namespace UNO.Model
                     IKarte gelegteKarteSpieler = AktiverSpieler.Karten[(int)AktiverSpieler.CardIndex];
                     if (VersuchtKarteLegen(gelegteKarteSpieler))
                     {
-                        LegtKarte(gelegteKarteSpieler);
+                        if (gelegteKarteSpieler.Farbe == KartenFarbe.Schwarz || gelegteKarteSpieler.Typ == KartenTyp.VierZiehen)
+                        {
+                            int blauCounter = 0;
+                            int rotCounter = 0;
+                            int gelbCounter = 0;
+                            int grünCounter = 0;
+                            foreach (IKarte zk in AktiverSpieler.Karten)
+                            {
+                                switch (zk.Farbe)
+                                {
+                                    case KartenFarbe.Gelb:
+                                        gelbCounter++;
+                                        break;
+                                    case KartenFarbe.Rot:
+                                        rotCounter++;
+                                        break;
+                                    case KartenFarbe.Blau:
+                                        blauCounter++;
+                                        break;
+                                    case KartenFarbe.Gruen:
+                                        grünCounter++;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            if (blauCounter > rotCounter && blauCounter > grünCounter && blauCounter > gelbCounter)
+                            {
+                                gelegteKarteSpieler.Farbe = KartenFarbe.Blau;
+                            }
+                            else if (rotCounter > blauCounter && rotCounter > grünCounter && rotCounter > gelbCounter)
+                            {
+                                gelegteKarteSpieler.Farbe = KartenFarbe.Rot;
+                            }
+                            else if (grünCounter > rotCounter && grünCounter > blauCounter && grünCounter > gelbCounter)
+                            {
+                                gelegteKarteSpieler.Farbe = KartenFarbe.Gruen;
+                            }
+                            else
+                            {
+                                gelegteKarteSpieler.Farbe = KartenFarbe.Gelb;
+                            }
+                            if (gelegteKarteSpieler.Typ == KartenTyp.VierZiehen)
+                            {
+                                vierziehenAktiv = true;
+                            }
+                            LegtKarte(gelegteKarteSpieler);
+                        }
+                        else
+                        {
+                            LegtKarte(gelegteKarteSpieler);
+                        }
                         break;
                     }
                     else
                     {
-                        if (AktiverSpieler.Ziehen == true)
+                        if (vierziehenAktiv)
                         {
-                            break;
+                            for (int i = 0; i < 4; i++)
+                            {
+                                GenugKartenImStapel();
+                                AktiverSpieler.ZiehtKarte(Stapel);
+                                vierziehenAktiv = false;
+                                ((Spieler)AktiverSpieler).CardIndex = null;
+                            }
                         }
-                        GenugKartenImStapel();
-                        AktiverSpieler.ZiehtKarte(Stapel);
-                        ((Spieler)AktiverSpieler).CardIndex = null;
+                        else
+                        {
+                            if (AktiverSpieler.Ziehen == true)
+                            {
+                                break;
+                            }
+                            GenugKartenImStapel();
+                            AktiverSpieler.ZiehtKarte(Stapel);
+                            ((Spieler)AktiverSpieler).CardIndex = null;
+                        }
                         NächsterSpieler();
                     }
                 }
@@ -156,6 +220,7 @@ namespace UNO.Model
                     GenugKartenImStapel();
                     AktiverSpieler.ZiehtKarte(Stapel);
                 }
+                vierziehenAktiv = false;
                 KartenZiehen = 0;
                 if (AktiverSpieler.Ki)
                 {
@@ -172,11 +237,22 @@ namespace UNO.Model
                 AktiverSpieler.ZiehtKarte(Stapel);
             }
             stopWatch.Stop();
-            if(AktiverSpieler.Karten.Count == 0)
+            if (AktiverSpieler.Karten.Count == 0)
             {
                 SpielerGewinnt();
                 AktiverSpieler.HastGewonnen();
                 Spielzug();
+            }
+            if (vierziehenAktiv)
+            {
+                if (KartenZiehen == 0)
+                {
+                    KartenZiehen = 4;
+                }
+                else
+                {
+                    vierziehenAktiv = false;
+                }
             }
             if (AllSpieler.Count > 1)
             {
@@ -186,25 +262,44 @@ namespace UNO.Model
                 }
                 NächsterSpieler();
             }
-            
         }
 
         private void KIMachtZug()
         {
-            ((KI)AktiverSpieler).ÜberprüftKarten(GelegteKarten.Last());
-            IKarte gelegteKarteSpieler = ((KI)AktiverSpieler).LegtKarte();
-            if (VersuchtKarteLegen(gelegteKarteSpieler))
+            if (vierziehenAktiv)
             {
-                LegtKarte(gelegteKarteSpieler);
+                ((KI)AktiverSpieler).ZiehtKarte(Stapel);
+                ((KI)AktiverSpieler).ZiehtKarte(Stapel);
+                ((KI)AktiverSpieler).ZiehtKarte(Stapel);
+                ((KI)AktiverSpieler).ZiehtKarte(Stapel);
+                vierziehenAktiv = false;
             }
             else
             {
-                if (((KI)AktiverSpieler).Ziehen != true)
+                ((KI)AktiverSpieler).ÜberprüftKarten(GelegteKarten.Last());
+                IKarte gelegteKarteSpieler = ((KI)AktiverSpieler).LegtKarte();
+                if (VersuchtKarteLegen(gelegteKarteSpieler))
                 {
-                    GenugKartenImStapel();
-                    ((KI)AktiverSpieler).ZiehtKarte(Stapel);
-                    ((KI)AktiverSpieler).CardIndex = null;
-                    NächsterSpieler();
+                    if (gelegteKarteSpieler.Typ == KartenTyp.VierZiehen)
+                    {
+                        vierziehenAktiv = true;
+                        gelegteKarteSpieler.Farbe = KartenFarbe.Blau;
+                    }
+                    else if (gelegteKarteSpieler.Typ == KartenTyp.Farbwechsel)
+                    {
+                        gelegteKarteSpieler.Farbe = KartenFarbe.Blau;
+                    }
+                    LegtKarte(gelegteKarteSpieler);
+                }
+                else
+                {
+                    if (((KI)AktiverSpieler).Ziehen != true)
+                    {
+                        GenugKartenImStapel();
+                        ((KI)AktiverSpieler).ZiehtKarte(Stapel);
+                        ((KI)AktiverSpieler).CardIndex = null;
+                        NächsterSpieler();
+                    }
                 }
             }
         }
@@ -236,6 +331,10 @@ namespace UNO.Model
         {
             IKarte obersteKarte = GelegteKarten.Last();
             //Schwarze Karten noch nicht da
+            if (vierziehenAktiv)
+            {
+                return false;
+            }
             if (karte.Farbe == obersteKarte.Farbe)
             {
                 if (karte.Typ == KartenTyp.Richtungswechsel)
@@ -285,6 +384,10 @@ namespace UNO.Model
                 }
                 return true;
             }
+            else if (karte.Farbe == KartenFarbe.Schwarz)
+            {
+                return true;
+            }
             return false;
         }
 
@@ -307,6 +410,54 @@ namespace UNO.Model
             {
                 if (farbe == KartenFarbe.Schwarz)
                 {
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+
+
+
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+
+
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+
+
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new FarbwechselKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
                     continue;
                 }
                 Stapel.Enqueue(new ZahlKarte(0, farbe));

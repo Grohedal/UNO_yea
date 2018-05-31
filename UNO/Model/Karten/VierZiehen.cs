@@ -6,18 +6,15 @@ using System.Threading.Tasks;
 
 namespace UNO.Model.Karten
 {
-    class ZahlKarte : IKarte
+    class VierZiehenKarte : IKarte
     {
-        KartenTyp IKarte.Typ => KartenTyp.Zahl;
-
+        public KartenTyp Typ => KartenTyp.VierZiehen;
         public KartenFarbe Farbe { get; set; }
-
+        public int KartenZiehen { get; }
         public int Zahl { get; }
-
-        public ZahlKarte(int zahl, KartenFarbe farbe)
+        public VierZiehenKarte()
         {
-            Zahl = zahl;
-            Farbe = farbe;
+            Farbe = KartenFarbe.Schwarz;
         }
     }
 }

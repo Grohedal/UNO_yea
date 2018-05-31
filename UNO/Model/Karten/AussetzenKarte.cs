@@ -10,7 +10,7 @@ namespace UNO.Model.Karten
     {
         public KartenTyp Typ => KartenTyp.Aussetzen;
 
-        public KartenFarbe Farbe { get; }
+        public KartenFarbe Farbe { get; set; }
 
         public AussetzenKarte(KartenFarbe farbe)
         {
