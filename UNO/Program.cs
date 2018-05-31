@@ -30,13 +30,14 @@ namespace UNO
             });
 
 #if DEBUG
-            Process.Start($"http://{Ip}:{HttpPort}");
+            //Process.Start($"http://{Ip}:{HttpPort}");
 #endif
         }
 
         private static void NewSpieler(IWebSocketConnection socket)
         {
-            Spieler NewSpieler = new Spieler("asdasd", socket);
+
+            Spieler NewSpieler = new Spieler("Spieler" + AllSpieler.Count, socket);
             NewSpieler.Socket.OnMessage = (string message) => NewSpieler.OnSend(message);
             AllSpieler.Add(NewSpieler);
 

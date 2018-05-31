@@ -20,7 +20,7 @@ namespace UNO.Model
         //event Action ZiehtKarte;
         void ZiehtKarte(Queue<IKarte> stapel);
         
-        void TeileSpielStand(IKarte gelegteKarte, bool aktiv);
+        void TeileSpielStand(IKarte gelegteKarte, bool aktiv, List<ISpieler> mitspieler);
 
         void HastGewonnen();
     }

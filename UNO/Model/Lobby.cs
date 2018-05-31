@@ -21,7 +21,7 @@ namespace UNO.Model
 
         public void Init()
         {
-            while(!Tischführer.Spielstarten)
+            while (!Tischführer.Spielstarten)
             {
                 Thread.Sleep(200);
             }

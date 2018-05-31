@@ -74,7 +74,7 @@ namespace UNO.Model
             Karten.Add(stapel.Dequeue());
         }
 
-        public void TeileSpielStand(IKarte gelegteKarte, bool aktiv)
+        public void TeileSpielStand(IKarte gelegteKarte, bool aktiv, List<ISpieler> mitspieler)
         {
         }
 

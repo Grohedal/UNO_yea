@@ -79,11 +79,11 @@ namespace UNO.Model
                 {
                     if (temp == AktiverSpieler)
                     {
-                        temp.TeileSpielStand(GelegteKarten.Last(), true);
+                        temp.TeileSpielStand(GelegteKarten.Last(), true, AllSpieler);
                     }
                     else
                     {
-                        temp.TeileSpielStand(GelegteKarten.Last(), false);
+                        temp.TeileSpielStand(GelegteKarten.Last(), false, AllSpieler);
                     }
                 }
             }

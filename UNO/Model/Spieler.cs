@@ -38,10 +38,24 @@ namespace UNO.Model
             Karten.Add(stapel.Dequeue());
         }
 
-        public void TeileSpielStand(IKarte gelegteKarte, bool aktiv)
+        public void TeileSpielStand(IKarte gelegteKarte, bool aktiv, List<ISpieler> mitspieler)
         {
+            List<object> objSpieler = new List<object>();
+            foreach (ISpieler player in mitspieler)
+            {
+                var toogle = false;
+                if(player == mitspieler.First())
+                {
+                     toogle = true;
+                } 
+                if(player.Name != Name)
+                {
+                    objSpieler.Add(new { name = player.Name, karten = player.Karten.Count, aktiv = toogle });
 
-            var obj = new { aktuelleKarte = gelegteKarte, aktiv = aktiv, hand = Karten , name = Name};
+                }
+            }
+
+            var obj = new { aktuelleKarte = gelegteKarte, aktiv = aktiv, hand = Karten , name = Name, alleSpieler = objSpieler};
             var json = new JavaScriptSerializer().Serialize(obj);
             Socket.Send(json);
         }
