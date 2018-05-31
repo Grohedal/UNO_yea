@@ -482,6 +482,7 @@ namespace UNO.Model
             while (AllSpieler.Count < 4)
             {
                 AllSpieler.Add(new KI("Knud" + count, null));
+                count++;
             }
             Austeilen();
             GelegteKarten.Add(Stapel.Dequeue());
