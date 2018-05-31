@@ -183,7 +183,7 @@
     .card.changeColor > .small::before,
     .card.changeColor > .small::after,
     .card.changeColor::after {
-        content: '<F>';
+        content: 'F';
     }
 
 #stapel {

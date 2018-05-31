@@ -101,7 +101,7 @@ namespace UNO.Model
             NichtGelegt = true;
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            while (stopWatch.ElapsedMilliseconds < 20000 && NichtGelegt)
+            while (stopWatch.ElapsedMilliseconds < 20000000000000 && NichtGelegt)
             {
                 if (AktiverSpieler.Ki == true)
                 {
@@ -175,6 +175,7 @@ namespace UNO.Model
                             {
                                 GenugKartenImStapel();
                                 AktiverSpieler.ZiehtKarte(Stapel);
+                                KartenZiehen = 0;
                                 vierziehenAktiv = false;
                                 ((Spieler)AktiverSpieler).CardIndex = null;
                             }
