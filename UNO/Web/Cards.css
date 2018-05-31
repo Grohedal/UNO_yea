@@ -28,8 +28,8 @@
 
 
 .card {
-    width: 160px;
-    height: 240px;
+    width: 80px;
+    height: 120px;
     border-radius: 8px;
     position: relative;
     display: inline-table;
@@ -62,7 +62,7 @@
         width: 100%;
         height: 100%;
         text-align: center;
-        font-size: 92px;
+        font-size: 46px;
         vertical-align: middle;
         display: table-cell;
     }
@@ -185,7 +185,7 @@
 
 #stapel {
     width: 100%;
-    height: 300px;
+    height: 180px;
     display: block;
     text-align: center;
     clear: both;
@@ -198,12 +198,39 @@
     text-align: center;
 }
 #gegner .gegner {
-    width: 200px;
+    width: 100px;
     float: left; 
-    height: 200px;
+    height: 80px;
+    margin: 10px;
+    text-align: center;
 
 }
-#gegner .aktiv {
-    border: 2px solid lightblue;
+#gegner .aktiv .name {
+    border: 4px solid lightblue;
+}
+#gegner .name {
+     background: linear-gradient(to bottom, #7d7e7d 0%,#0e0e0e 100%);
+     padding: 10px 20px;
+     border-radius: 20px;
+     font-weight: bold;
+     color: white;
+
+}
+#gegner .karten ::before {
+    content: "Karten:";
+}
+#gegner .karten {
+    margin: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+#testy {
+     background: linear-gradient(to bottom, #7d7e7d 0%,#0e0e0e 100%);
+     padding: 10px 20px;
+     border-radius: 20px;
+     font-weight: bold;
+     color: white;
+     width: 200px;
+     text-align: center;
 }
 
