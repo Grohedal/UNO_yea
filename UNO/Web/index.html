@@ -69,9 +69,12 @@
                 var htmlString = "";
                 for (var i = 0; i < this.mitspieler.length; i++) {
 
-                    htmlString += '<div class="gegner">';
+                    console.log(this.mitspieler[i]);
                     if (this.mitspieler[i].aktiv) {
-                        htmlString += '<div class="aktiv-player">Ich bin dran</div>';
+                        console.log(i);
+                        htmlString += '<div class="gegner aktiv">';
+                    } else {
+                        htmlString += '<div class="gegner">';
                     }
                     htmlString += '<div class="name">' + this.mitspieler[i].name + '</div><div class="karten">' + this.mitspieler[i].karten + '</div></div>';
                 }
@@ -157,8 +160,8 @@
     <div id="spielfeld">
         <div id="gegner"></div>
         <div id="stapel"></div>
-        <div id="info"></div>
         <div id="state"></div>
+        <div id="info"></div>
     </div>
     <div id="hand"></div>
 

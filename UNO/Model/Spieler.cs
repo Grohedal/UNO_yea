@@ -40,17 +40,19 @@ namespace UNO.Model
 
         public void TeileSpielStand(IKarte gelegteKarte, bool aktiv, List<ISpieler> mitspieler)
         {
+            int startIndexSelber = mitspieler.IndexOf(this);
+
             List<object> objSpieler = new List<object>();
-            foreach (ISpieler player in mitspieler)
+            for (int i = startIndexSelber +1; i < mitspieler.Count + startIndexSelber; i++)
             {
                 var toogle = false;
-                if(player == mitspieler.First())
+                if(mitspieler[i % mitspieler.Count] == mitspieler.First())
                 {
                      toogle = true;
                 } 
-                if(player.Name != Name)
+                if(mitspieler[i % mitspieler.Count].Name != Name)
                 {
-                    objSpieler.Add(new { name = player.Name, karten = player.Karten.Count, aktiv = toogle });
+                    objSpieler.Add(new { name = mitspieler[i % mitspieler.Count].Name, karten = mitspieler[i % mitspieler.Count].Karten.Count, aktiv = toogle });
 
                 }
             }

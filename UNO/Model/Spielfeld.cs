@@ -419,46 +419,6 @@ namespace UNO.Model
                     Stapel.Enqueue(new VierZiehenKarte());
                     Stapel.Enqueue(new VierZiehenKarte());
                     Stapel.Enqueue(new VierZiehenKarte());
-
-
-
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-
-
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-
-
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new FarbwechselKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
                     continue;
                 }
                 Stapel.Enqueue(new ZahlKarte(0, farbe));

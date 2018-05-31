@@ -15,9 +15,6 @@
     font-weight: bold;
     text-align: center;
     color: deeppink;
-    position: fixed;
-    top: 20px;
-    left: 20px;
 }
 
 #info {
@@ -191,6 +188,7 @@
     height: 300px;
     display: block;
     text-align: center;
+    clear: both;
 }
 
 #celebration {
@@ -199,3 +197,13 @@
     font-weight: bold;
     text-align: center;
 }
+#gegner .gegner {
+    width: 200px;
+    float: left; 
+    height: 200px;
+
+}
+#gegner .aktiv {
+    border: 2px solid lightblue;
+}
+
