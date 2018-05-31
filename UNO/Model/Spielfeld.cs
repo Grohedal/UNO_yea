@@ -327,7 +327,11 @@ namespace UNO.Model
 
         public void SpielStart()
         {
-            AllSpieler.Add(new KI("Knud", null));
+            int count = 0;
+            while (AllSpieler.Count < 4)
+            {
+                AllSpieler.Add(new KI("Knud" + count, null));
+            }
             Austeilen();
             GelegteKarten.Add(Stapel.Dequeue());
             if (GelegteKarten[0].Typ == KartenTyp.Ziehen)
@@ -336,6 +340,28 @@ namespace UNO.Model
                 KartenZiehen = 2;
             }
             Spielzug();
+        }
+
+        public void SpielEnde()
+        {
+            List<ISpieler> AlleSpielerImSpiel = AllSpieler.Concat(FertigeSpieler).ToList();
+            foreach (ISpieler sp in AlleSpielerImSpiel)
+            {
+                if (sp.Karten.Count > 0)
+                {
+                    sp.Karten.RemoveRange(0, sp.Karten.Count - 1);
+                }
+            }
+            AllSpieler.RemoveRange(0, AllSpieler.Count - 1);
+            FertigeSpieler.RemoveRange(0, FertigeSpieler.Count - 1);
+            Stapel.Clear();
+            GelegteKarten.RemoveRange(0, GelegteKarten.Count - 1);
+            AllSpieler = AlleSpielerImSpiel;
+            for (int i = 0; i < AllSpieler.Count; i++)
+            {
+                AllSpieler.Remove(AllSpieler.Where(x => x.Ki == true).FirstOrDefault());
+            }
+            InitStapel();
         }
 
         private void SpielNeustart()
