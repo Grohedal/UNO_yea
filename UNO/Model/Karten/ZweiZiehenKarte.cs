@@ -10,7 +10,7 @@ namespace UNO.Model.Karten
     {
         public KartenTyp Typ => KartenTyp.Ziehen;
 
-        public KartenFarbe Farbe { get;}
+        public KartenFarbe Farbe { get; set; }
 
         public int Anzahl { get; } = 2;
 

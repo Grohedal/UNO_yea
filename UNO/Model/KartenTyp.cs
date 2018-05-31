@@ -13,6 +13,7 @@ namespace UNO.Model
         Ziehen = 2,
         Aussetzen = 4,
         Richtungswechsel = 8,
-        Farbwechsel = 16
+        Farbwechsel = 15,
+        VierZiehen = 16
     }
 }

@@ -10,7 +10,7 @@ namespace UNO.Model.Karten
     {
         public KartenTyp Typ => KartenTyp.Richtungswechsel;
 
-        public KartenFarbe Farbe { get; }
+        public KartenFarbe Farbe { get; set; }
 
         public RichtungswechselKarte(KartenFarbe farbe)
         {

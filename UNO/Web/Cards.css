@@ -18,7 +18,6 @@
     position: fixed;
     top: 20px;
     left: 20px;
-
 }
 
 #info {
@@ -74,6 +73,11 @@
     .card.red {
         background: url(cardbg_red.png);
         border: 1px solid #200;
+    }
+
+    .card.black {
+        background: url(cardbg.png);
+        border: 1px solid #002;
     }
 
     .card.blue {
@@ -168,15 +172,30 @@
     .card.take-two::after {
         content: '+2';
     }
-    #stapel {
-        width: 100%;
-        height: 300px;
-        display:block;
-        text-align: center;
+
+    .card.take-four > .small::before,
+    .card.take-four > .small::after,
+    .card.take-four::after {
+        content: '+4';
     }
-    #celebration {
-        font-size: 24px;
-        color: crimson;
-        font-weight: bold;
-        text-align: center;
+
+
+    .card.changeColor > .small::before,
+    .card.changeColor > .small::after,
+    .card.changeColor::after {
+        content: '<F>';
     }
+
+#stapel {
+    width: 100%;
+    height: 300px;
+    display: block;
+    text-align: center;
+}
+
+#celebration {
+    font-size: 24px;
+    color: crimson;
+    font-weight: bold;
+    text-align: center;
+}
