@@ -45,7 +45,7 @@ namespace UNO.Model
 
         private void LegtKarte(IKarte karte)
         {
-            if (AktiverSpieler.Ziehen != true || karte.Typ == KartenTyp.Ziehen)
+            if (AktiverSpieler.Ziehen != true || karte.Typ == KartenTyp.Ziehen || karte.Typ == KartenTyp.VierZiehen)
             {
                 AktiverSpieler.Karten.Remove(karte);
                 GelegteKarten.Add(karte);
@@ -159,6 +159,7 @@ namespace UNO.Model
                             if (gelegteKarteSpieler.Typ == KartenTyp.VierZiehen)
                             {
                                 vierziehenAktiv = true;
+                                KartenZiehen += 4;
                             }
                             LegtKarte(gelegteKarteSpieler);
                         }
@@ -172,14 +173,15 @@ namespace UNO.Model
                     {
                         if (vierziehenAktiv)
                         {
-                            for (int i = 0; i < 4; i++)
+                            for (int i = 0; i < KartenZiehen; i++)
                             {
                                 GenugKartenImStapel();
                                 AktiverSpieler.ZiehtKarte(Stapel);
-                                KartenZiehen = 0;
-                                vierziehenAktiv = false;
-                                ((Spieler)AktiverSpieler).CardIndex = null;
                             }
+                            KartenZiehen = 0;
+                            vierziehenAktiv = false;
+                            ((Spieler)AktiverSpieler).Ziehen = false;
+                            ((Spieler)AktiverSpieler).CardIndex = null;
                         }
                         else
                         {
@@ -217,20 +219,23 @@ namespace UNO.Model
             }
             else if (KartenZiehen != 0)
             {
-                for (int i = 0; i < KartenZiehen; i++)
+                if (NichtGelegt)
                 {
-                    GenugKartenImStapel();
-                    AktiverSpieler.ZiehtKarte(Stapel);
-                }
-                vierziehenAktiv = false;
-                KartenZiehen = 0;
-                if (AktiverSpieler.Ki)
-                {
-                    ((KI)AktiverSpieler).Ziehen = false;
-                }
-                else
-                {
-                    ((Spieler)AktiverSpieler).Ziehen = false;
+                    for (int i = 0; i < KartenZiehen; i++)
+                    {
+                        GenugKartenImStapel();
+                        AktiverSpieler.ZiehtKarte(Stapel);
+                    }
+                    vierziehenAktiv = false;
+                    KartenZiehen = 0;
+                    if (AktiverSpieler.Ki)
+                    {
+                        ((KI)AktiverSpieler).Ziehen = false;
+                    }
+                    else
+                    {
+                        ((Spieler)AktiverSpieler).Ziehen = false;
+                    }
                 }
             }
             else if (KartenZiehen == 0 && NichtGelegt)
@@ -244,17 +249,6 @@ namespace UNO.Model
                 SpielerGewinnt();
                 AktiverSpieler.HastGewonnen();
                 Spielzug();
-            }
-            if (vierziehenAktiv)
-            {
-                if (KartenZiehen == 0)
-                {
-                    KartenZiehen = 4;
-                }
-                else
-                {
-                    vierziehenAktiv = false;
-                }
             }
             if (AllSpieler.Count > 1)
             {
@@ -287,6 +281,7 @@ namespace UNO.Model
                     if (gelegteKarteSpieler.Typ == KartenTyp.VierZiehen)
                     {
                         vierziehenAktiv = true;
+                        KartenZiehen += 4;
                         gelegteKarteSpieler.Farbe = KartenFarbe.Blau;
                     }
                     else if (gelegteKarteSpieler.Typ == KartenTyp.Farbwechsel)
@@ -403,7 +398,7 @@ namespace UNO.Model
 
         private void NächsterSpieler()
         {
-            
+
             AllSpieler.Remove(AktiverSpieler);
             AllSpieler.Add(AktiverSpieler);
             Spielzug();
@@ -423,6 +418,14 @@ namespace UNO.Model
                     Stapel.Enqueue(new VierZiehenKarte());
                     Stapel.Enqueue(new VierZiehenKarte());
                     Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
+                    Stapel.Enqueue(new VierZiehenKarte());
                     continue;
                 }
                 Stapel.Enqueue(new ZahlKarte(0, farbe));
@@ -432,6 +435,9 @@ namespace UNO.Model
                     {
                         Stapel.Enqueue(new ZahlKarte(i, farbe));
                     }
+                    Stapel.Enqueue(new ZweiZiehenKarte(farbe));
+                    Stapel.Enqueue(new ZweiZiehenKarte(farbe));
+                    Stapel.Enqueue(new ZweiZiehenKarte(farbe));
                     Stapel.Enqueue(new ZweiZiehenKarte(farbe));
                     Stapel.Enqueue(new RichtungswechselKarte(farbe));
                     Stapel.Enqueue(new AussetzenKarte(farbe));
@@ -467,7 +473,7 @@ namespace UNO.Model
                 if (sp.Karten.Count > 0)
                 {
                     sp.Karten.RemoveRange(0, sp.Karten.Count - 1);
-                  
+
                 }
             }
 
