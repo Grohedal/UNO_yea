@@ -41,6 +41,16 @@
                 if (data.alleSpieler != undefined) {
                     this.mitspieler = data.alleSpieler;
                 }
+                if (data.spielEnde != undefined) {
+                    this.specialCards = ['', '', 'take-two', '', 'miss', '', '', '', 'switch', '', '', '', '', '', '', 'changeColor', 'take-four'];
+                    this.nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+                    this.color = ['yellow', 'red', 'blue', 'green', ' '];
+                    this.stapel = "";
+                    this.hand = "";
+                    this.state = false;
+                    this.mitspieler = {};
+                    $('#testy').css("display", "block");
+                }
                 this.UpdateView();
 
             }

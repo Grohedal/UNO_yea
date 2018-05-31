@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using UNO.Model.Karten;
 
 namespace UNO.Model
@@ -311,6 +312,7 @@ namespace UNO.Model
         {
             AllSpieler.Remove(AktiverSpieler);
             FertigeSpieler.Add(AktiverSpieler);
+            SpielEnde();
         }
 
         private void GenugKartenImStapel()
@@ -465,8 +467,10 @@ namespace UNO.Model
                 if (sp.Karten.Count > 0)
                 {
                     sp.Karten.RemoveRange(0, sp.Karten.Count - 1);
+                  
                 }
             }
+
             AllSpieler.RemoveRange(0, AllSpieler.Count - 1);
             FertigeSpieler.RemoveRange(0, FertigeSpieler.Count - 1);
             Stapel.Clear();
@@ -475,6 +479,12 @@ namespace UNO.Model
             for (int i = 0; i < AllSpieler.Count; i++)
             {
                 AllSpieler.Remove(AllSpieler.Where(x => x.Ki == true).FirstOrDefault());
+            }
+            foreach (ISpieler qwe in AllSpieler)
+            {
+                var obj = new { spielEnde = true };
+                var json = new JavaScriptSerializer().Serialize(obj);
+                qwe.Socket.Send(json);
             }
             InitStapel();
         }
