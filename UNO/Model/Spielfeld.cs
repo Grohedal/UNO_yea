@@ -102,7 +102,7 @@ namespace UNO.Model
             NichtGelegt = true;
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            while (stopWatch.ElapsedMilliseconds < 20000000000000 && NichtGelegt)
+            while (stopWatch.ElapsedMilliseconds < 20000 && NichtGelegt)
             {
                 if (AktiverSpieler.Ki == true)
                 {
@@ -418,14 +418,6 @@ namespace UNO.Model
                     Stapel.Enqueue(new VierZiehenKarte());
                     Stapel.Enqueue(new VierZiehenKarte());
                     Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
-                    Stapel.Enqueue(new VierZiehenKarte());
                     continue;
                 }
                 Stapel.Enqueue(new ZahlKarte(0, farbe));
@@ -435,9 +427,6 @@ namespace UNO.Model
                     {
                         Stapel.Enqueue(new ZahlKarte(i, farbe));
                     }
-                    Stapel.Enqueue(new ZweiZiehenKarte(farbe));
-                    Stapel.Enqueue(new ZweiZiehenKarte(farbe));
-                    Stapel.Enqueue(new ZweiZiehenKarte(farbe));
                     Stapel.Enqueue(new ZweiZiehenKarte(farbe));
                     Stapel.Enqueue(new RichtungswechselKarte(farbe));
                     Stapel.Enqueue(new AussetzenKarte(farbe));
@@ -461,6 +450,21 @@ namespace UNO.Model
             {
                 ((Spieler)AllSpieler[0]).Ziehen = true;
                 KartenZiehen = 2;
+            }
+            else if (GelegteKarten[0].Typ == KartenTyp.VierZiehen || GelegteKarten[0].Typ == KartenTyp.Farbwechsel)
+            {
+                GelegteKarten.Add(Stapel.Dequeue());
+                for (int i = 1; i < 99; i++)
+                {
+                    if (GelegteKarten[i].Typ == KartenTyp.VierZiehen || GelegteKarten[i].Typ == KartenTyp.Farbwechsel)
+                    {
+                        GelegteKarten.Add(Stapel.Dequeue());
+                    }
+                    else
+                    {
+                        i = 100;
+                    }
+                }
             }
             Spielzug();
         }
