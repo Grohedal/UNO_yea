@@ -482,9 +482,15 @@ namespace UNO.Model
             Stapel.Clear();
             GelegteKarten.RemoveRange(0, GelegteKarten.Count - 1);
             AllSpieler = AlleSpielerImSpiel;
+
             for (int i = 0; i < AllSpieler.Count; i++)
             {
-                AllSpieler.Remove(AllSpieler.Where(x => x.Ki == true).FirstOrDefault());
+                object ki = AllSpieler.Where(x => x.Ki == true).FirstOrDefault();
+                if (ki != null)
+                {
+                    AllSpieler.Remove(AllSpieler.Where(x => x.Ki == true).FirstOrDefault());
+                    i--;
+                }
             }
             foreach (ISpieler qwe in AllSpieler)
             {
