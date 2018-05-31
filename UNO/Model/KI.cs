@@ -10,7 +10,7 @@ using UNO.Model;
 
 namespace UNO.Model
 {
-    class KI :ISpieler
+    class KI : ISpieler
     {
         public IWebSocketConnection Socket { get; }
         public List<IKarte> Karten { get; } = new List<IKarte>();
@@ -27,7 +27,7 @@ namespace UNO.Model
             Socket = null;
             Name = name;
         }
-        
+
         public void ÜberprüftKarten(IKarte karte)
         {
             LegbareKarten = new List<IKarte>();
@@ -37,7 +37,7 @@ namespace UNO.Model
                 {
                     LegbareKarten.Add(k);
                 }
-                else if(k.Typ == karte.Typ)
+                else if (k.Typ == karte.Typ)
                 {
                     if (k.Typ == KartenTyp.Zahl)
                     {
@@ -51,6 +51,10 @@ namespace UNO.Model
                         LegbareKarten.Add(k);
                     }
                 }
+                else if (k.Typ == KartenTyp.VierZiehen || k.Typ == KartenTyp.Farbwechsel)
+                {
+                    LegbareKarten.Add(k);
+                }
             }
         }
 
@@ -60,6 +64,29 @@ namespace UNO.Model
             if (LegbareKarten.Count > 0)
             {
                 IKarte k = LegbareKarten[0];
+                if (k.Typ == KartenTyp.Farbwechsel ||k.Typ == KartenTyp.VierZiehen)
+                {
+                    Random random = new Random();
+                    int rnd = random.Next(1, 5);
+                    switch (rnd)
+                    {
+                        case 1:
+                            k.Farbe = KartenFarbe.Gelb;
+                            break;
+                        case 2:
+                            k.Farbe = KartenFarbe.Blau;
+                            break;
+                        case 3:
+                            k.Farbe = KartenFarbe.Rot;
+                            break;
+                        case 4:
+                            k.Farbe = KartenFarbe.Gruen;
+                            break;
+                        default:
+                            k.Farbe = KartenFarbe.Gruen;
+                            break;
+                    }
+                }
                 Karten.Remove(k);
                 return k;
             }
