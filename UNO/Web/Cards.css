@@ -7,8 +7,29 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Bellefair', serif;
+    font-family: 'Roboto', serif;
 }
+
+.info-text {
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    color: deeppink;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+
+}
+
+#info {
+    font-size: 1.5em;
+    font-weight: bold;
+    position: fixed;
+    top: 100px;
+    left: 20px;
+    color: crimson;
+}
+
 
 .card {
     width: 160px;
@@ -146,4 +167,16 @@
     .card.take-two > .small::after,
     .card.take-two::after {
         content: '+2';
+    }
+    #stapel {
+        width: 100%;
+        height: 300px;
+        display:block;
+        text-align: center;
+    }
+    #celebration {
+        font-size: 24px;
+        color: crimson;
+        font-weight: bold;
+        text-align: center;
     }

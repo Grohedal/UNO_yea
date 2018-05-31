@@ -1,48 +1,190 @@
 <!doctype html>
 <html>
 <head>
-    <link href="https://fonts.googleapis.com/css?family=Bellefair" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,700,500,100" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link href="Cards.css"/>
+    <link href="Cards.css" rel="stylesheet" />
     <script>
-        $(window).on('load', function () {
-            var nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'miss', 'switch', 'take-two'];
-            var color = ['', 'red', 'blue', 'green', 'yellow'];
+        class Uno {
+            constructor(connection) {
+                this.connection = connection;
+                this.specialCards = ['', '', 'take-two', '', 'miss', '', '', '', 'switch'];
+                this.nr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+                this.color = ['yellow', 'red', 'blue', 'green', ' '];
+                this.stapel = "";
+                this.hand = "";
+                this.state = false;
 
-            $(color).each(function (j, c) {
-                $(nr).each(function (i, n) {
-                    var cl = n + ' ' + c;
+            }
 
-                    $('body').append(
-                        '<div class="card ' + cl + '">' +
+            GetState() {
+                return this.state;
+            }
+
+
+            Message(message) {
+                var data = JSON.parse(message);
+                if (data.aktiv != undefined) {
+                    this.state = data.aktiv;
+                }
+                if (data.hand != undefined) {
+                    this.UpdateHand(data.hand);
+                }
+                if (data.aktuelleKarte != undefined) {
+                    this.UpdateStapel(data.aktuelleKarte);
+                }
+                if (data.gewonnen != undefined) {
+                    this.Gewonnen();
+                }
+                this.UpdateView();
+
+            }
+
+            SpieleKarte(id) {
+                this.connection.send(id);
+            }
+            Gewonnen() {
+                this.state = false;
+                this.hand = "<div id='celebration'>Winner Winner Chicken Dinner</div>";
+            }
+            UpdateView() {
+                $('#hand').html(this.hand);
+                $('#stapel').html(this.stapel);
+                if (this.state) {
+                    $('#state').html('<div class="info-text">Bub du bist dran!!!</div>');
+                } else {
+                    $('#state').html('');
+                }
+                this.hand = "";
+                this.stapel = "";
+            }
+
+            UpdateStapel(stapel) {
+                console.log(stapel);
+                if (stapel.Typ != undefined) {
+                    this.stapel += '<div  class="card ' + this.specialCards[stapel.Typ] + ' ' + this.color[stapel.Farbe] + ' ' + '">' +
                         '    <div class="small"></div>' +
-                        '</div>'
-                    );
-                });
+                        '</div>';
+                } else {
+                    this.stapel += '<div class="card ' + this.nr[stapel.Zahl] + ' ' + this.color[stapel.Farbe] + ' ' + '">' +
+                        '    <div class="small"></div>' +
+                        '</div>';
+                }
+            }
+
+            UpdateHand(handKarten) {
+                var length = handKarten.length;
+                for (var i = 0; i < length; i++) {
+                    if (handKarten[i].Typ != undefined) {
+                        this.hand += '<div id="card-' + i + '" class="card ' + this.specialCards[handKarten[i].Typ] + ' ' + this.color[handKarten[i].Farbe] + '">' +
+                            '    <div class="small"></div>' +
+                            '</div>';
+                    } else {
+                        this.hand += '<div id="card-' + i + '"  class="card ' + this.nr[handKarten[i].Zahl] + ' ' + this.color[handKarten[i].Farbe] + '" >' +
+                            '    <div class="small"></div>' +
+                            '</div>';
+                    }
+                }
+            }
+
+        }
+
+        class Lobby {
+            constructor(domain, data) {
+                var spielerName = data.msg;
+                var connection =  new WebSocket('ws://' + domain + ':668');
+                console.log(this.connection);
+
+                console.log(this);
+                connection.onopen = function () {
+                    connection.send(JSON.stringify({ spielerName: spielerName, type: "Ping" }));
+                    // Send the message 'Ping' to the server
+                }
+                // Log errors
+                connection.onerror = function (error) {
+                    console.log('WebSocket Error ' + error);
+                }
+
+                // Log messages from the server
+                connection.onmessage = function (e) {
+                    console.log(e.data);
+                }
+
+                 connection.send(JSON.stringify({ spielerName: spielerName, type: "Ping" }));
+ 
+
+                this.connection = connection;             
+            }
+        }
+
+        class Game {
+            constructor(tisch, lobby) {
+                this.tisch = tisch;
+                this.lobby = lobby;
+            }
+        }
+        $(document).ready(function () {
+            var domain = document.location.hostname;
+            var connectionSpieler = new WebSocket('ws://' + domain + ':666');
+
+            const uno = new Uno(connectionSpieler);
+
+            // When the connection is open, send some data to the server
+            connectionSpieler.onopen = function () {
+                connectionSpieler.send('Ping');
+                // Send the message 'Ping' to the server
+            }
+
+            // Log errors
+            connectionSpieler.onerror = function (error) {
+                console.log('WebSocket Error ' + error);
+            }
+
+            // Log messages from the server
+            connectionSpieler.onmessage = function (e) {
+                console.log(e.data);
+                var tempData = JSON.parse(e.data);
+
+                if (tempData.type == "spielerName") {
+                    var connectionLobby = new Lobby(domain, tempData);
+                } else {
+                    uno.Message(e.data);
+                }
+            }
+
+            $("#hand").click('.card', function (e) {
+                if (uno.GetState()) {
+                    uno.SpieleKarte(e.target.id);
+                } else {
+                    $('#info').html('Du bist nicht dran Ingo !!').delay(3000).fadeOut(function () {
+                        $('#info').html('');
+                        $('#info').css('display', 'block');
+                    });
+                }
+            });
+
+            $("#testy").click(function (e) {
+                connectionSpieler.send("START");
+            });
+
+            $("#tischerstellen").click(function (e) {
+                connectionLobby.send("erstelleTisch");
             });
         });
 
-        var connection = new WebSocket('ws://localhost:666');
-
-        // When the connection is open, send some data to the server
-        connection.onopen = function () {
-            connection.send('Ping'); // Send the message 'Ping' to the server
-        };
-
-        // Log errors
-        connection.onerror = function (error) {
-            console.log('WebSocket Error ' + error);
-        };
-
-        // Log messages from the server
-        connection.onmessage = function (e) {
-            console.log('Server: ' + e.data);
-        };
 
 
     </script>
 </head>
 <body>
-    TEST 1,2,3
+    <button id="tischerstellen">Tisch erstellen</button>
+    <div id="testy">Starten</div>
+    <div id="spielfeld">
+        <div id="stapel"></div>
+        <div id="info"></div>
+        <div id="state"></div>
+    </div>
+    <div id="hand"></div>
+
 </body>
 </html>

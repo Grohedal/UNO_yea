@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UNO.Model.Karten;
 
 namespace UNO.Model
 {
-    static class Extensions
+    public static class Extensions
     {
         public static Queue<T> Mischen<T>(this Queue<T> q)
         {

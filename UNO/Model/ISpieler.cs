@@ -13,9 +13,15 @@ namespace UNO.Model
         string Name { get; }
         List<IKarte> Karten { get; }
         bool Aussetzen { get; }
+        bool Ki { get; }
+        bool Ziehen { get; }
+        int? CardIndex { get;  }
 
-        event Action ZiehtKarte;
+        //event Action ZiehtKarte;
+        void ZiehtKarte(Queue<IKarte> stapel);
+        
+        void TeileSpielStand(IKarte gelegteKarte, bool aktiv);
 
-        event Func<IKarte> LegtKarte;
+        void HastGewonnen();
     }
 }

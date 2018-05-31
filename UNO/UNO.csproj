@@ -35,11 +35,13 @@
     <Reference Include="Fleck, Version=0.14.0.59, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Fleck.0.14.0.59\lib\net40\Fleck.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,14 +50,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\UnoController.cs" />
     <Compile Include="Model\Extensions.cs" />
     <Compile Include="Model\IKarte.cs" />
     <Compile Include="Model\ISpieler.cs" />
     <Compile Include="Model\KartenFarbe.cs" />
     <Compile Include="Model\KartenTyp.cs" />
+    <Compile Include="Model\Karten\AussetzenKarte.cs" />
+    <Compile Include="Model\Karten\RichtungswechselKarte.cs" />
     <Compile Include="Model\Karten\ZahlKarte.cs" />
     <Compile Include="Model\Karten\ZweiZiehenKarte.cs" />
-    <Compile Include="Model\KiWebSocket.cs" />
+    <Compile Include="Model\KI.cs" />
     <Compile Include="Model\Spieler.cs" />
     <Compile Include="Model\Spielfeld.cs" />
     <Compile Include="Program.cs" />
@@ -89,5 +94,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
