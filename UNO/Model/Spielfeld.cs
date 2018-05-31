@@ -273,6 +273,8 @@ namespace UNO.Model
                 ((KI)AktiverSpieler).ZiehtKarte(Stapel);
                 ((KI)AktiverSpieler).ZiehtKarte(Stapel);
                 ((KI)AktiverSpieler).ZiehtKarte(Stapel);
+                KartenZiehen = 0;
+                NichtGelegt = false;
                 vierziehenAktiv = false;
             }
             else
