@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using UNO.Model.Karten;
@@ -476,7 +477,7 @@ namespace UNO.Model
             {
                 if (sp.Karten.Count > 0)
                 {
-                    sp.Karten.RemoveRange(0, sp.Karten.Count - 1);
+                    sp.Karten.RemoveAll(x => (true));
 
                 }
             }
@@ -498,11 +499,21 @@ namespace UNO.Model
             }
             foreach (ISpieler qwe in AllSpieler)
             {
+                qwe.Spielstarten = false;
                 var obj = new { spielEnde = true };
                 var json = new JavaScriptSerializer().Serialize(obj);
                 qwe.Socket.Send(json);
             }
-            InitStapel();
+
+            if(AllSpieler.Count > 1)
+            {
+                ISpieler ersterSpieler = AllSpieler.First();
+                while(ersterSpieler.Spielstarten != true)
+                {
+                    Thread.Sleep(200);
+                }
+                SpielStart();
+            }
         }
 
         private void SpielNeustart()

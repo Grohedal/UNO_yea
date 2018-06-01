@@ -21,6 +21,8 @@ namespace UNO.Model
         public bool Ki { get; }
         public int? CardIndex { get; set; }
 
+        public bool Spielstarten { get; set; }
+
         public KI(string name, IWebSocketConnection socket)
         {
             Ki = true;

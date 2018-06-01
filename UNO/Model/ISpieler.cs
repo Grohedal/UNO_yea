@@ -17,11 +17,14 @@ namespace UNO.Model
         bool Ziehen { get; }
         int? CardIndex { get;  }
 
+        bool Spielstarten { get; set; }
+
         //event Action ZiehtKarte;
         void ZiehtKarte(Queue<IKarte> stapel);
         
         void TeileSpielStand(IKarte gelegteKarte, bool aktiv, List<ISpieler> mitspieler);
 
         void HastGewonnen();
+
     }
 }
